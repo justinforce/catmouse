@@ -1,5 +1,6 @@
 /**
- * index.js is the entry point for the program.  *
+ * index.js is the entry point for the program
+ *
  * Design Goals:
  *
  * 1. Don't introduce new files, types, indirection, etc. unless we have to.
@@ -23,17 +24,18 @@ const height = 600;
 const fps = 60;
 
 // How much time to simulate each update
-const stepLength = 1000 / fps;
+const stepSize = 1000 / fps;
 
 // The canvas element where the world is drawn
 const canvas = document.querySelector('canvas');
 
 // The rendering context
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', { alpha: false });
 
+// A ball that bounces around the screen for debugging
 const ball = {
   speed: {
-    x: 0.15,
+    x: 0.5,
     y: 0.15,
   },
   box: {
@@ -42,6 +44,7 @@ const ball = {
   },
 };
 
+// The world where the simulation takes place
 const world = {
   box: {
     x: width,
@@ -49,7 +52,7 @@ const world = {
   },
 };
 
-// All mutable state is stored here
+// All mutable state
 const st = {
   ball: {
     pos: {
@@ -63,28 +66,44 @@ const st = {
   },
 };
 
-// Negates val if test is false, otherwise return val
+// eslint-disable-next-line no-console
+const debug = (...args) => console.debug(...args);
+
+// Negates val if test is false, otherwise returns val
 const negateIf = (test, val) => (test ? -val : val);
 
-// Returns true if val is more than, less than, or equal to either low or high
+// Returns false if low < val < high, otherwise returns true.
 const outOfRangeExclusive = (low, high, val) => val <= low || val >= high;
 
 /**
- * Updates the simulation for a given time interval dt.
+ * Updates the simulation once
  */
-const update = dt => () => {
+const update = () => {
   // update ball
   (() => {
-    // FIXME There's a better way to do this than writing axis a billion times.
     const worldBoundary = axis => world.box[axis];
     const edgeOfWorld = axis =>
-      outOfRangeExclusive(ball.box.x, worldBoundary(axis), st.ball.pos[axis]);
-    const velocity = axis => negateIf(edgeOfWorld(axis), st.ball.vel[axis]);
+      outOfRangeExclusive(0, worldBoundary(axis), st.ball.pos[axis]);
+
+    const velocity = (axis) => {
+      const sign = Math.sign(st.ball.vel[axis]);
+      const vel = sign * ball.speed[axis];
+      return negateIf(edgeOfWorld(axis), vel);
+    };
     const velocityX = velocity('x');
     const velocityY = velocity('y');
-    const incrementalVelocity = axis => st.ball.pos[axis] + (velocity(axis) * dt);
-    const position = axis =>
-      clamp(0, worldBoundary(axis), incrementalVelocity(axis));
+
+    const position = (axis) => {
+      /**
+       * Multiply velocity by stepSize to get an instantaneous velocity value
+       * for this interval that automatically scales with the target frame rate.
+       * This makes the simulation run at a consistent speed regardless of frame
+       * rate.
+       */
+      const instantaneousVelocity = velocity(axis) * stepSize;
+      const unclampedPosition = st.ball.pos[axis] + instantaneousVelocity;
+      return clamp(0, worldBoundary(axis), unclampedPosition);
+    };
     const positionX = position('x');
     const positionY = position('y');
 
@@ -100,35 +119,49 @@ const update = dt => () => {
  * Draws the frame
  */
 const draw = () => {
+  const startTime = window.performance.now();
+
   // draw background
-  ctx.fillStyle = '#333';
+  ctx.fillStyle = '#334';
   ctx.fillRect(0, 0, width, height);
 
   // draw ball
   (() => {
-    const x = st.ball.pos.x - (ball.box.x / 2);
-    const y = st.ball.pos.y - (ball.box.y / 2);
+    const { x, y } = st.ball.pos;
     const radius = ball.box.x / 2;
-    ctx.fillStyle = '#efefef';
-    ctx.strokeStyle = '#333';
+
+    // side effects
+    ctx.fillStyle = 'magenta';
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI);
     ctx.fill();
   })();
+  const endTime = window.performance.now();
+  const duration = endTime - startTime;
+
+  // debug
+  if (duration > stepSize) debug('Slow draw!', { duration });
 };
 
 /**
- * Returns a function that runs as many updates as are needed for the given
- * timestamp and accumulated unsimulated time, draws the frame, then enqueues
- * the next step on the next animation frame.
+ * Returns a functor to be used as the callback to window.requestAnimationFrame
+ * which enqueues the next step on the next animation frame, runs as many
+ * updates as are needed for the given prevFrameTime and prevLeftoverTime, then
+ * draws the frame.
  */
-const step = (t0, accumulatedTime) => (t) => {
-  const dt = accumulatedTime + (t - t0);
-  const requiredUpdateCount = Math.floor(dt / stepLength);
-  const leftoverTime = dt % stepLength;
-  times(update(dt), requiredUpdateCount);
+const step = (prevFrameTime, prevLeftoverTime) => (now) => {
+  const isFirstFrame = prevFrameTime === 0;
+  const timeToSimulate = prevLeftoverTime + (now - prevFrameTime);
+  const updateCount = isFirstFrame ? 1 : Math.floor(timeToSimulate / stepSize);
+  const leftoverTime = timeToSimulate % stepSize;
+
+  // side effects. requestAnimationFrame first to get it enqueued ASAP.
+  requestAnimationFrame(step(now, leftoverTime));
+  times(update, updateCount);
   draw();
-  requestAnimationFrame(step(t, leftoverTime));
+
+  // debug
+  if (updateCount > 1) debug('Frame skipped!', { timeToSimulate, updateCount });
 };
 
 // init
