@@ -11,7 +11,7 @@
  *    functions.
  */
 
-import { clamp, times } from 'ramda';
+import { clamp, filter, head, indexOf, keys, lte, split, times } from 'ramda';
 import './style.css';
 
 // Width of the world
@@ -64,6 +64,10 @@ const st = {
       y: ball.speed.y,
     },
   },
+  input: {
+    left: false,
+    right: false,
+  },
 };
 
 // eslint-disable-next-line no-console
@@ -86,9 +90,12 @@ const update = () => {
       outOfRangeExclusive(0, worldBoundary(axis), st.ball.pos[axis]);
 
     const velocity = (axis) => {
-      const sign = Math.sign(st.ball.vel[axis]);
-      const vel = sign * ball.speed[axis];
-      return negateIf(edgeOfWorld(axis), vel);
+      const leftDirection = st.input.left && !st.input.right ? -1 : null;
+      const rightDirection = st.input.right && !st.input.left ? 1 : null;
+      const currentDirection = Math.sign(st.ball.vel[axis]);
+      const direction = leftDirection || rightDirection || currentDirection;
+      const velocityVector = direction * ball.speed[axis];
+      return negateIf(edgeOfWorld(axis), velocityVector);
     };
     const velocityX = velocity('x');
     const velocityY = velocity('y');
@@ -164,7 +171,31 @@ const step = (prevFrameTime, prevLeftoverTime) => (now) => {
   if (updateCount > 1) debug('Frame skipped!', { timeToSimulate, updateCount });
 };
 
+/**
+ * Map input flags to keys. Multiple keys per input for multiple control
+ * schemes.
+ */
+const inputToKeys = {
+  left: split(' ', 'ArrowLeft j J a A'),
+  right: split(' ', 'ArrowRight l L d D'),
+};
+
+/**
+ * Returns a functor that sets the state of the input defined in inputToKeys to
+ * the value specified as flagValue.
+ */
+const handleKey = flagValue => (event) => {
+  const { key } = event;
+  const hasKey = inputToKey => lte(0, indexOf(key, inputToKey));
+  const input = head(keys(filter(hasKey, inputToKeys)));
+
+  // side effects
+  st.input[input] = flagValue;
+};
+
 // init
 canvas.width = width;
 canvas.height = height;
+window.addEventListener('keydown', handleKey(true));
+window.addEventListener('keyup', handleKey(false));
 requestAnimationFrame(step(0, 0));
