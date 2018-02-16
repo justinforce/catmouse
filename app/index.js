@@ -123,3 +123,28 @@ canvas.height = height;
 window.addEventListener('keydown', Input.handleKey(true));
 window.addEventListener('keyup', Input.handleKey(false));
 requestAnimationFrame(step(0, 0));
+
+// debug
+
+// Save and load state with i/o keys
+let savedState = state;
+window.addEventListener('keydown', (event) => {
+  const saveState = () => {
+    savedState = state;
+    debug('State saved.', { state });
+  };
+  const loadState = () => {
+    state = savedState;
+    debug('State loaded.', { state });
+  };
+  switch (event.key) {
+    case 'i':
+      saveState();
+      break;
+    case 'o':
+      loadState();
+      break;
+    default:
+      break;
+  }
+});
