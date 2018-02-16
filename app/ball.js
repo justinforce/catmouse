@@ -41,7 +41,6 @@ export const initialState = () => ({
 });
 
 export const delta = state => ({
-  ...state,
   ball: {
     ...state.ball,
     box: {

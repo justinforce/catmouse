@@ -134,6 +134,7 @@ const handleKey = flagValue => (event) => {
   const input = head(keys(filter(hasKey, inputToKeys)));
   const delta = {
     input: {
+      ...state.input,
       [input]: flagValue,
     },
   };
