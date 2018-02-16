@@ -71,26 +71,26 @@ const update = () => {
  * Draws the frame
  */
 const draw = () => {
-  const startTime = window.performance.now();
+  const startTime = window.performance.now(); // for debug
 
   const [ballX, ballY] = state.ball.box.position;
   const radiusFactor = pickRandom([1 / 2, 1, 3]);
   const ballRadius = state.ball.box.dimensions[0] * radiusFactor;
+  const ballColor = pickRandom(['cyan', 'magenta', 'yellow', 'white']);
 
   // draw background
   ctx.fillStyle = '#334';
   ctx.fillRect(0, 0, width, height);
 
   // draw ball
-  ctx.fillStyle = pickRandom(['cyan', 'magenta', 'yellow', 'white']);
+  ctx.fillStyle = ballColor;
   ctx.beginPath();
   ctx.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI);
   ctx.fill();
 
+  // debug
   const endTime = window.performance.now();
   const duration = endTime - startTime;
-
-  // debug
   if (duration > stepSize) debug('Slow draw!', { duration });
 };
 
