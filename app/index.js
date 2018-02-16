@@ -11,8 +11,10 @@
  *    functions.
  */
 
-import { clamp, filter, head, indexOf, keys, lte, split, times } from 'ramda';
+import { filter, gt, head, indexOf, keys, split, times } from 'ramda';
 import './style.css';
+import * as Ball from './ball';
+import { debug } from './util';
 
 // Width of the world
 const width = 800;
@@ -32,94 +34,27 @@ const canvas = document.querySelector('canvas');
 // The rendering context
 const ctx = canvas.getContext('2d', { alpha: false });
 
-// A ball that bounces around the screen for debugging
-const ball = {
-  speed: {
-    x: 0.5,
-    y: 0.15,
-  },
-  box: {
-    x: 10,
-    y: 10,
-  },
-};
-
-// The world where the simulation takes place
-const world = {
-  box: {
-    x: width,
-    y: height,
-  },
-};
-
 // All mutable state
-const st = {
-  ball: {
-    pos: {
-      x: (width / 2) - ball.box.x,
-      y: (height / 2) - ball.box.y,
-    },
-    vel: {
-      x: ball.speed.x,
-      y: ball.speed.y,
+let state = {
+  stepSize,
+  world: {
+    box: {
+      dimensions: [width, height],
     },
   },
+  ball: Ball.initialState(),
   input: {
     left: false,
     right: false,
   },
 };
 
-// eslint-disable-next-line no-console
-const debug = (...args) => console.debug(...args);
-
-// Negates val if test is false, otherwise returns val
-const negateIf = (test, val) => (test ? -val : val);
-
-// Returns false if low < val < high, otherwise returns true.
-const outOfRangeExclusive = (low, high, val) => val <= low || val >= high;
-
 /**
  * Updates the simulation once
  */
 const update = () => {
-  // update ball
-  (() => {
-    const worldBoundary = axis => world.box[axis];
-    const edgeOfWorld = axis =>
-      outOfRangeExclusive(0, worldBoundary(axis), st.ball.pos[axis]);
-
-    const velocity = (axis) => {
-      const leftDirection = st.input.left && !st.input.right ? -1 : null;
-      const rightDirection = st.input.right && !st.input.left ? 1 : null;
-      const currentDirection = Math.sign(st.ball.vel[axis]);
-      const direction = leftDirection || rightDirection || currentDirection;
-      const velocityVector = direction * ball.speed[axis];
-      return negateIf(edgeOfWorld(axis), velocityVector);
-    };
-    const velocityX = velocity('x');
-    const velocityY = velocity('y');
-
-    const position = (axis) => {
-      /**
-       * Multiply velocity by stepSize to get an instantaneous velocity value
-       * for this interval that automatically scales with the target frame rate.
-       * This makes the simulation run at a consistent speed regardless of frame
-       * rate.
-       */
-      const instantaneousVelocity = velocity(axis) * stepSize;
-      const unclampedPosition = st.ball.pos[axis] + instantaneousVelocity;
-      return clamp(0, worldBoundary(axis), unclampedPosition);
-    };
-    const positionX = position('x');
-    const positionY = position('y');
-
-    // side effects
-    st.ball.vel.x = velocityX;
-    st.ball.vel.y = velocityY;
-    st.ball.pos.x = positionX;
-    st.ball.pos.y = positionY;
-  })();
+  const ballDelta = Ball.delta(state);
+  state = { ...state, ...ballDelta };
 };
 
 /**
@@ -133,16 +68,15 @@ const draw = () => {
   ctx.fillRect(0, 0, width, height);
 
   // draw ball
-  (() => {
-    const { x, y } = st.ball.pos;
-    const radius = ball.box.x / 2;
+  const [x, y] = state.ball.box.position;
+  const radius = state.ball.box.dimensions[0] / 2;
 
-    // side effects
-    ctx.fillStyle = 'magenta';
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, 2 * Math.PI);
-    ctx.fill();
-  })();
+  // side effects
+  ctx.fillStyle = 'magenta';
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.fill();
+
   const endTime = window.performance.now();
   const duration = endTime - startTime;
 
@@ -186,11 +120,11 @@ const inputToKeys = {
  */
 const handleKey = flagValue => (event) => {
   const { key } = event;
-  const hasKey = inputToKey => lte(0, indexOf(key, inputToKey));
+  const hasKey = inputToKey => gt(indexOf(key, inputToKey), 0);
   const input = head(keys(filter(hasKey, inputToKeys)));
 
   // side effects
-  st.input[input] = flagValue;
+  state.input[input] = flagValue;
 };
 
 // init

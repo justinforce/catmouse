@@ -1,4 +1,6 @@
 {
   "presets": ["env"],
-  "plugins": ["ramda"]
+  "plugins": [
+    "transform-object-rest-spread"
+  ]
 }
