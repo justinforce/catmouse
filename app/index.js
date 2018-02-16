@@ -14,7 +14,7 @@
 import { filter, head, indexOf, keys, split, times } from 'ramda';
 import './style.css';
 import * as Ball from './ball';
-import { debug } from './util';
+import { debug, pickRandom } from './util';
 
 // Width of the world
 const width = 800;
@@ -74,14 +74,15 @@ const draw = () => {
   const startTime = window.performance.now();
 
   const [ballX, ballY] = state.ball.box.position;
-  const ballRadius = state.ball.box.dimensions[0] / 2;
+  const radiusFactor = pickRandom([1 / 2, 1, 3]);
+  const ballRadius = state.ball.box.dimensions[0] * radiusFactor;
 
   // draw background
   ctx.fillStyle = '#334';
   ctx.fillRect(0, 0, width, height);
 
   // draw ball
-  ctx.fillStyle = 'magenta';
+  ctx.fillStyle = pickRandom(['cyan', 'magenta', 'yellow', 'white']);
   ctx.beginPath();
   ctx.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI);
   ctx.fill();

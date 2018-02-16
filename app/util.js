@@ -12,3 +12,6 @@ export const debug = (...args) => {
   console.debug(...args);
   return args;
 };
+
+// Returns a random item from list
+export const pickRandom = list => list[Math.floor(Math.random() * list.length)];
