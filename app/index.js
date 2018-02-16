@@ -11,7 +11,7 @@
  *    functions.
  */
 
-import { filter, gt, head, indexOf, keys, split, times } from 'ramda';
+import { filter, head, indexOf, keys, split, times } from 'ramda';
 import './style.css';
 import * as Ball from './ball';
 import { debug } from './util';
@@ -50,11 +50,21 @@ let state = {
 };
 
 /**
+ * Sets the state by merging the given state delta with the current state and
+ * setting the state to that new value.
+ */
+const set = (delta) => {
+  state = { ...state, ...delta };
+};
+
+/**
  * Updates the simulation once
  */
 const update = () => {
   const ballDelta = Ball.delta(state);
-  state = { ...state, ...ballDelta };
+
+  // side effects
+  set(ballDelta);
 };
 
 /**
@@ -63,18 +73,17 @@ const update = () => {
 const draw = () => {
   const startTime = window.performance.now();
 
+  const [ballX, ballY] = state.ball.box.position;
+  const ballRadius = state.ball.box.dimensions[0] / 2;
+
   // draw background
   ctx.fillStyle = '#334';
   ctx.fillRect(0, 0, width, height);
 
   // draw ball
-  const [x, y] = state.ball.box.position;
-  const radius = state.ball.box.dimensions[0] / 2;
-
-  // side effects
   ctx.fillStyle = 'magenta';
   ctx.beginPath();
-  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI);
   ctx.fill();
 
   const endTime = window.performance.now();
@@ -120,11 +129,16 @@ const inputToKeys = {
  */
 const handleKey = flagValue => (event) => {
   const { key } = event;
-  const hasKey = inputToKey => gt(indexOf(key, inputToKey), 0);
+  const hasKey = inputToKey => indexOf(key, inputToKey) > -1;
   const input = head(keys(filter(hasKey, inputToKeys)));
+  const delta = {
+    input: {
+      [input]: flagValue,
+    },
+  };
 
   // side effects
-  state.input[input] = flagValue;
+  set(delta);
 };
 
 // init
