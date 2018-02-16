@@ -20,7 +20,11 @@ export const initialState = () => ({
 /**
  * The last known input state, to be written whenever a state change is required
  * (inputs are set or unset, e.g. a key is pressed or released) and read every
- * update via delta()
+ * update via delta(). Usually we want to avoid holding state inside a module
+ * like this, but Input is special because it's unpredictable--updates come when
+ * the user presses and releases buttons instead of when the update comes
+ * around, so cache the state in this intermediate object for easy retrieval by
+ * delta() later.
  */
 let inputState = initialState();
 
