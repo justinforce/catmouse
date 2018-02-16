@@ -6,22 +6,6 @@ const ySpeed = 0.15;
 const radius = 5;
 const diameter = radius * 2;
 
-export const speed = () => [xSpeed, ySpeed];
-export const box = () => ({
-  position: [100, 100],
-  dimensions: [diameter, diameter],
-  velocity: [xSpeed, ySpeed],
-});
-
-export const initialState = () => ({
-  box: {
-    position: [100, 100],
-    dimensions: [diameter, diameter],
-    velocity: [xSpeed, ySpeed],
-  },
-  speed: [xSpeed, ySpeed],
-});
-
 const worldBoundary = (index, state) => state.world.box.dimensions[index];
 
 const velocity = (index, state) => {
@@ -35,7 +19,7 @@ const velocity = (index, state) => {
   return negateIf(edgeOfWorld, velocityVector);
 };
 
-export const position = (index, state) => {
+const position = (index, state) => {
   /**
    * Multiply velocity by stepSize to get an instantaneous velocity value
    * for this interval that automatically scales with the target frame rate.
@@ -46,6 +30,15 @@ export const position = (index, state) => {
   const unclampedPosition = state.ball.box.position[index] + instantaneousVelocity;
   return clamp(0, worldBoundary(index, state), unclampedPosition);
 };
+
+export const initialState = () => ({
+  box: {
+    position: [0, 0],
+    dimensions: [diameter, diameter],
+    velocity: [xSpeed, ySpeed],
+  },
+  speed: [xSpeed, ySpeed],
+});
 
 export const delta = state => ({
   ...state,
