@@ -126,23 +126,19 @@ requestAnimationFrame(step(0, 0));
 
 // debug
 
-// Save and load state with i/o keys
+// Save and load state in memory with i/o keys. NO PERSISTENCE!
 let savedState = state;
 window.addEventListener('keydown', (event) => {
-  const saveState = () => {
-    savedState = state;
-    debug('State saved.', { state });
-  };
-  const loadState = () => {
-    state = savedState;
-    debug('State loaded.', { state });
-  };
+  const saveState = () => { savedState = state; };
+  const loadState = () => { state = savedState; };
   switch (event.key) {
     case 'i':
       saveState();
+      debug('State saved.', state);
       break;
     case 'o':
       loadState();
+      debug('State loaded.', state);
       break;
     default:
       break;
