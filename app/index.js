@@ -11,9 +11,10 @@
  *    functions.
  */
 
-import { filter, head, indexOf, keys, split, times } from 'ramda';
+import { times } from 'ramda';
 import './style.css';
 import * as Ball from './ball';
+import * as Input from './input';
 import { debug, pickRandom } from './util';
 
 // Width of the world
@@ -43,15 +44,14 @@ let state = {
     },
   },
   ball: Ball.initialState(),
-  input: {
-    left: false,
-    right: false,
-  },
+  input: Input.initialState(),
 };
 
 /**
  * Sets the state by merging the given state delta with the current state and
  * setting the state to that new value.
+ *
+ * TODO This set and the one in input.js should be DRY-ed
  */
 const set = (delta) => {
   state = { ...state, ...delta };
@@ -61,7 +61,9 @@ const set = (delta) => {
  * Updates the simulation once
  */
 const update = () => {
-  const ballDelta = Ball.delta(state);
+  const inputDelta = Input.delta(state);
+  const postInputState = { ...state, ...inputDelta };
+  const ballDelta = Ball.delta(postInputState);
 
   // side effects
   set(ballDelta);
@@ -115,37 +117,9 @@ const step = (prevFrameTime, prevLeftoverTime) => (now) => {
   if (updateCount > 1) debug('Frame skipped!', { timeToSimulate, updateCount });
 };
 
-/**
- * Map input flags to keys. Multiple keys per input for multiple control
- * schemes.
- */
-const inputToKeys = {
-  left: split(' ', 'ArrowLeft j J a A'),
-  right: split(' ', 'ArrowRight l L d D'),
-};
-
-/**
- * Returns a functor that sets the state of the input defined in inputToKeys to
- * the value specified as flagValue.
- */
-const handleKey = flagValue => (event) => {
-  const { key } = event;
-  const hasKey = inputToKey => indexOf(key, inputToKey) > -1;
-  const input = head(keys(filter(hasKey, inputToKeys)));
-  const delta = {
-    input: {
-      ...state.input,
-      [input]: flagValue,
-    },
-  };
-
-  // side effects
-  set(delta);
-};
-
 // init
 canvas.width = width;
 canvas.height = height;
-window.addEventListener('keydown', handleKey(true));
-window.addEventListener('keyup', handleKey(false));
+window.addEventListener('keydown', Input.handleKey(true));
+window.addEventListener('keyup', Input.handleKey(false));
 requestAnimationFrame(step(0, 0));

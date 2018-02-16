@@ -40,6 +40,9 @@ export const initialState = () => ({
   speed: [xSpeed, ySpeed],
 });
 
+/**
+ * Returns the changes to the ball's state as a subtree of the state tree.
+ */
 export const delta = state => ({
   ball: {
     ...state.ball,
