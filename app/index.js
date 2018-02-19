@@ -11,7 +11,7 @@
  *    functions.
  */
 
-import { times } from 'ramda';
+import { mergeDeepRight, times } from 'ramda';
 import './style.css';
 import * as Ball from './ball';
 import * as Input from './input';
@@ -54,15 +54,15 @@ let state = {
  * TODO This set and the one in input.js should be DRY-ed
  */
 const set = (delta) => {
-  state = { ...state, ...delta };
+  state = mergeDeepRight(state, delta);
 };
 
 /**
  * Updates the simulation once
  */
 const update = () => {
-  const inputDelta = Input.delta(state);
-  const postInputState = { ...state, ...inputDelta };
+  const inputDelta = Input.delta();
+  const postInputState = mergeDeepRight(state, inputDelta);
   const ballDelta = Ball.delta(postInputState);
 
   // side effects

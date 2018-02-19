@@ -45,9 +45,7 @@ export const initialState = () => ({
  */
 export const delta = state => ({
   ball: {
-    ...state.ball,
     box: {
-      ...state.ball.box,
       velocity: [velocity(0, state), velocity(1, state)],
       position: [position(0, state), position(1, state)],
     },

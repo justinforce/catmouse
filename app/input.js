@@ -1,4 +1,4 @@
-import { filter, head, indexOf, keys, split } from 'ramda';
+import { filter, head, indexOf, keys, mergeDeepRight, split } from 'ramda';
 
 /**
  * Map input flags to keys. Multiple keys per input for multiple control
@@ -35,7 +35,7 @@ let inputState = initialState();
  * TODO This set and the one in index.js should be DRY-ed
  */
 const set = (delta) => {
-  inputState = { ...inputState, ...delta };
+  inputState = mergeDeepRight(inputState, delta);
 };
 
 /**
@@ -62,9 +62,4 @@ export const handleKey = flagValue => (event) => {
 /**
  * Returns the changes to the input state as a subtree of the state tree.
  */
-export const delta = state => ({
-  input: {
-    ...state.input,
-    ...inputState,
-  },
-});
+export const delta = () => ({ input: inputState });
