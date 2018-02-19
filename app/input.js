@@ -29,16 +29,6 @@ export const initialState = () => ({
 let inputState = initialState();
 
 /**
- * Sets the state by merging the given state delta with the current state and
- * setting the state to that new value.
- *
- * TODO This set and the one in index.js should be DRY-ed
- */
-const set = (delta) => {
-  inputState = mergeDeepRight(inputState, delta);
-};
-
-/**
  * Returns a functor that sets the state of the input defined in inputToKeys to
  * the value specified as flagValue.
  *
@@ -56,10 +46,10 @@ export const handleKey = flagValue => (event) => {
   };
 
   // side effects
-  set(inputDelta);
+  inputState = inputDelta;
 };
 
 /**
  * Returns the changes to the input state as a subtree of the state tree.
  */
-export const delta = () => ({ input: inputState });
+export const delta = state => mergeDeepRight(state, { input: inputState });

@@ -1,4 +1,4 @@
-import { clamp } from 'ramda';
+import { clamp, mergeDeepRight } from 'ramda';
 import { negateIf, outOfRange } from './util';
 
 const xSpeed = 0.5;
@@ -43,11 +43,12 @@ export const initialState = () => ({
 /**
  * Returns the changes to the ball's state as a subtree of the state tree.
  */
-export const delta = state => ({
-  ball: {
-    box: {
-      velocity: [velocity(0, state), velocity(1, state)],
-      position: [position(0, state), position(1, state)],
+export const delta = state =>
+  mergeDeepRight(state, {
+    ball: {
+      box: {
+        velocity: [velocity(0, state), velocity(1, state)],
+        position: [position(0, state), position(1, state)],
+      },
     },
-  },
-});
+  });
