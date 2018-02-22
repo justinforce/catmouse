@@ -11,10 +11,11 @@
  *    functions.
  */
 
-import { mergeDeepRight, pipe, times } from 'ramda';
+import { pipe, times } from 'ramda';
 import './style.css';
 import * as Ball from './ball';
 import * as Input from './input';
+import * as State from './state';
 import { debug, pickRandom } from './util';
 
 // Width of the world
@@ -35,26 +36,15 @@ const canvas = document.querySelector('canvas');
 // The rendering context
 const ctx = canvas.getContext('2d', { alpha: false });
 
-// All mutable state
-let state = {
-  stepSize,
-  world: {
-    box: {
-      dimensions: [width, height],
-    },
-  },
-  ball: Ball.initialState(),
-  input: Input.initialState(),
-};
-
 /**
  * Updates the simulation once
  */
 const update = () => {
+  const state = State.get();
   const delta = pipe(Input.delta, Ball.delta)(state);
 
   // side effects
-  state = mergeDeepRight(state, delta);
+  State.update(delta);
 };
 
 /**
@@ -63,10 +53,13 @@ const update = () => {
 const draw = () => {
   const startTime = window.performance.now(); // for debug
 
+  const state = State.get();
   const [ballX, ballY] = state.ball.box.position;
   const radiusFactor = pickRandom([1 / 2, 1, 3]);
   const ballRadius = state.ball.box.dimensions[0] * radiusFactor;
   const ballColor = pickRandom(['cyan', 'magenta', 'yellow', 'white']);
+
+  // side effects
 
   // draw background
   ctx.fillStyle = '#334';
@@ -105,28 +98,37 @@ const step = (prevFrameTime, prevLeftoverTime) => (now) => {
   if (updateCount > 1) debug('Frame skipped!', { timeToSimulate, updateCount });
 };
 
+const initialState = {
+  stepSize,
+  world: {
+    box: {
+      dimensions: [width, height],
+    },
+  },
+  ball: Ball.initialState(),
+  input: Input.initialState(),
+};
+
 // init
 canvas.width = width;
 canvas.height = height;
 window.addEventListener('keydown', Input.handleKey(true));
 window.addEventListener('keyup', Input.handleKey(false));
+State.update(initialState);
 requestAnimationFrame(step(0, 0));
 
 // debug
 
 // Save and load state in memory with i/o keys. NO PERSISTENCE!
-let savedState = state;
 window.addEventListener('keydown', (event) => {
-  const saveState = () => { savedState = state; };
-  const loadState = () => { state = savedState; };
   switch (event.key) {
     case 'i':
-      saveState();
-      debug('State saved.', state);
+      State.save();
+      debug('State saved.');
       break;
     case 'o':
-      loadState();
-      debug('State loaded.', state);
+      State.load();
+      debug('State loaded.');
       break;
     default:
       break;
