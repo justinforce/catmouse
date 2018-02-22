@@ -1,5 +1,5 @@
 /**
- * index.js is the entry point for the program
+ * The entry point for the program
  *
  * Design Goals:
  *
