@@ -1,4 +1,4 @@
-catmouse
+sim
 ========
 
 Yet another stab at building a game that plays itself with AI.
