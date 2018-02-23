@@ -10,7 +10,6 @@
  * 4. Favor vectors with property names x/y as it will encourage generic
  *    functions.
  */
-
 import { pipe, times } from 'ramda';
 import './style.css';
 import * as Ball from './ball';
@@ -78,7 +77,7 @@ const draw = () => {
 };
 
 /**
- * Returns a functor to be used as the callback to window.requestAnimationFrame
+ * Returns a function to be used as the callback to window.requestAnimationFrame
  * which enqueues the next step on the next animation frame, runs as many
  * updates as are needed for the given prevFrameTime and prevLeftoverTime, then
  * draws the frame.
@@ -98,6 +97,26 @@ const step = (prevFrameTime, prevLeftoverTime) => (now) => {
   if (updateCount > 1) debug('Frame skipped!', { timeToSimulate, updateCount });
 };
 
+/**
+ * Sets handler to respond to keydown events on the window.
+ */
+const keyDown = (handler) => {
+  window.addEventListener('keydown', handler);
+};
+
+/**
+ * Sets toggler(true) to be called when a key is pressed and toggler(false) to
+ * be called when a key is released. toggler is expected to be a higher order
+ * function that returns an event handler.
+ */
+const keyToggle = (toggler) => {
+  window.addEventListener('keydown', toggler(true));
+  window.addEventListener('keyup', toggler(false));
+};
+
+/**
+ * The initial state of the world when the simulation begins
+ */
 const initialState = {
   stepSize,
   world: {
@@ -109,17 +128,12 @@ const initialState = {
   input: Input.initialState(),
 };
 
-const keydown = (handler) => {
-  window.addEventListener('keydown', handler);
-};
-
-// init
+// init (side effects)
+State.update(initialState);
 canvas.width = width;
 canvas.height = height;
-window.addEventListener('keydown', Input.handleKey(true));
-window.addEventListener('keyup', Input.handleKey(false));
-keydown(Input.keydown(State.save, 'i'));
-keydown(Input.keydown(State.load, 'o'));
-State.update(initialState);
+keyDown(Input.press(State.save, 'i'));
+keyDown(Input.press(State.load, 'o'));
+keyToggle(Input.toggle('left', 'ArrowLeft j J a A'));
+keyToggle(Input.toggle('right', 'ArrowRight l L d D'));
 requestAnimationFrame(step(0, 0));
-

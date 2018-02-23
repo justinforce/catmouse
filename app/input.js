@@ -1,13 +1,4 @@
-import { filter, head, indexOf, keys, mergeDeepRight, split } from 'ramda';
-
-/**
- * Map input flags to keys. Multiple keys per input for multiple control
- * schemes, e.g. You can press the left arrow or J or A to turn left.
- */
-const inputToKeys = {
-  left: split(' ', 'ArrowLeft j J a A'),
-  right: split(' ', 'ArrowRight l L d D'),
-};
+import { contains, mergeDeepRight } from 'ramda';
 
 /**
  * The initial state of the inputs
@@ -29,33 +20,41 @@ export const initialState = () => ({
 let inputState = initialState();
 
 /**
- * Returns a functor that sets the state of the input defined in inputToKeys to
- * the value specified as flagValue.
- *
- * N.B. Because this happens as an event callback instead of every step of the
- * simulation, it has to directly write its state to something so that the
- * update function can read it via the delta function and always get the latest
- * inputs.
- */
-export const handleKey = flagValue => (event) => {
-  const { key } = event;
-  const hasKey = inputToKey => indexOf(key, inputToKey) > -1;
-  const input = head(keys(filter(hasKey, inputToKeys)));
-  const inputDelta = {
-    [input]: flagValue,
-  };
-
-  // side effects
-  inputState = inputDelta;
-};
-
-/**
  * Returns the changes to the input state as a subtree of the state tree.
  */
 export const delta = state => mergeDeepRight(state, { input: inputState });
 
-export const keydown = (callback, key) => (event) => {
-  if (event.key === key) {
-    callback();
+/**
+ * Returns a function to be used as an event callback. The callback will be
+ * triggered when an event like { key: key } is passed in, e.g.
+ *
+ *     window.addEventListener('keydown', press(State.save, 'i'));
+ *
+ * and State.save will be called whenever event.key === 'i'
+ */
+export const press = (callback, key) => (event) => {
+  if (event.key === key) callback();
+};
+
+/**
+ * Returns a function to be used as an event callback. Set
+ * inputState[input] = true when the flag === true, and false when
+ * flag === false. By currying (input, keys) separately from flag, we can easily
+ * set up handlers for enabling and disabling the input, e.g.
+ *
+ *     const toggler = toggle('left', 'ArrowLeft j J a A');
+ *     window.addEventListener('keydown', toggler(true));
+ *     window.addEventListener('keyup', toggler(false));
+ *
+ * And now inputState.left will be set to true when any of the specified keys
+ * are pressed and false when they're released.
+ */
+export const toggle = (input, keys) => flag => (event) => {
+  const { key } = event;
+  if (contains(key, keys.split(' '))) {
+    const inputDelta = { [input]: flag };
+
+    // side effects
+    inputState = mergeDeepRight(inputState, inputDelta);
   }
 };
