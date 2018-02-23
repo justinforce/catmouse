@@ -53,3 +53,9 @@ export const handleKey = flagValue => (event) => {
  * Returns the changes to the input state as a subtree of the state tree.
  */
 export const delta = state => mergeDeepRight(state, { input: inputState });
+
+export const keydown = (callback, key) => (event) => {
+  if (event.key === key) {
+    callback();
+  }
+};

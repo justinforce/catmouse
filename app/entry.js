@@ -109,28 +109,17 @@ const initialState = {
   input: Input.initialState(),
 };
 
+const keydown = (handler) => {
+  window.addEventListener('keydown', handler);
+};
+
 // init
 canvas.width = width;
 canvas.height = height;
 window.addEventListener('keydown', Input.handleKey(true));
 window.addEventListener('keyup', Input.handleKey(false));
+keydown(Input.keydown(State.save, 'i'));
+keydown(Input.keydown(State.load, 'o'));
 State.update(initialState);
 requestAnimationFrame(step(0, 0));
 
-// debug
-
-// Save and load state in memory with i/o keys. NO PERSISTENCE!
-window.addEventListener('keydown', (event) => {
-  switch (event.key) {
-    case 'i':
-      State.save();
-      debug('State saved.');
-      break;
-    case 'o':
-      State.load();
-      debug('State loaded.');
-      break;
-    default:
-      break;
-  }
-});
