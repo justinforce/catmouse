@@ -4,8 +4,10 @@ import { contains, mergeDeepRight } from 'ramda';
  * The initial state of the inputs
  */
 export const initialState = () => ({
-  left: false,
-  right: false,
+  input: {
+    left: false,
+    right: false,
+  },
 });
 
 /**
@@ -17,12 +19,12 @@ export const initialState = () => ({
  * around, so cache the state in this intermediate object for easy retrieval by
  * delta() later.
  */
-let inputState = initialState();
+let state = initialState();
 
 /**
  * Returns the changes to the input state as a subtree of the state tree.
  */
-export const delta = state => mergeDeepRight(state, { input: inputState });
+export const delta = previousState => mergeDeepRight(previousState, state);
 
 /**
  * Returns a function to be used as an event callback. The callback will be
@@ -38,7 +40,7 @@ export const press = (callback, key) => (event) => {
 
 /**
  * Returns a function to be used as an event callback. Set
- * inputState[input] = true when the flag === true, and false when
+ * state.input[input] = true when the flag === true, and false when
  * flag === false. By currying (input, keys) separately from flag, we can easily
  * set up handlers for enabling and disabling the input, e.g.
  *
@@ -46,15 +48,20 @@ export const press = (callback, key) => (event) => {
  *     window.addEventListener('keydown', toggler(true));
  *     window.addEventListener('keyup', toggler(false));
  *
- * And now inputState.left will be set to true when any of the specified keys
+ * And now state.input.left will be set to true when any of the specified keys
  * are pressed and false when they're released.
  */
 export const toggle = (input, keys) => flag => (event) => {
   const { key } = event;
   if (contains(key, keys.split(' '))) {
-    const inputDelta = { [input]: flag };
+    const inputDelta = {
+      input: {
+        [input]: flag,
+      },
+    };
+    const newState = mergeDeepRight(state, inputDelta);
 
     // side effects
-    inputState = mergeDeepRight(inputState, inputDelta);
+    state = newState;
   }
 };
