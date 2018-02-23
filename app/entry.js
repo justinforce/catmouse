@@ -129,7 +129,7 @@ const initialState = {
 };
 
 // init (side effects)
-State.update(initialState);
+State.init(initialState);
 canvas.width = width;
 canvas.height = height;
 keyDown(Input.press(State.save, 'i'));
