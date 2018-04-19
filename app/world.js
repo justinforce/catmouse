@@ -3,18 +3,13 @@ import { mergeDeepRight } from 'ramda';
 const size = [800, 600];
 
 const initialState = () => ({
-  step: 0,
-  body: {
-    size,
-  },
+  size,
 });
 
 const delta = state =>
   mergeDeepRight(state, {
     world: {
-      body: {
-        size,
-      },
+      size,
     },
   });
 

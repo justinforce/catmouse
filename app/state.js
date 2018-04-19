@@ -26,7 +26,7 @@ const load = () => { set(savedState); };
 
 const init = () => {
   const initialWorldState = World.initialState();
-  const initialPlayerState = Player.initialState(initialWorldState.body.size);
+  const initialPlayerState = Player.initialState(initialWorldState.size);
   const initialState = {
     ball: Ball.initialState(),
     input: Input.initialState(),

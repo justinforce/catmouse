@@ -15,23 +15,23 @@ const drawCircle = (position, radius, fillStyle) => {
 
 const drawBackground = (world) => {
   ctx.fillStyle = '#334';
-  ctx.fillRect(0, 0, ...world.body.size);
+  ctx.fillRect(0, 0, ...world.size);
 };
 
 const drawBall = (ball) => {
   const radiusFactor = pickRandom([1, 2, 6]);
-  const radius = ball.body.size * radiusFactor;
+  const radius = ball.size * radiusFactor;
   const color = pickRandom(['cyan', 'magenta', 'yellow', 'white']);
 
-  drawCircle(ball.body.position, radius, color);
+  drawCircle(ball.position, radius, color);
 };
 
 const drawPlayer = (player) => {
-  drawCircle(player.body.position, player.body.size, 'magenta');
+  drawCircle(player.position, player.size, 'magenta');
 };
 
 const init = (world) => {
-  [canvas.width, canvas.height] = world.body.size;
+  [canvas.width, canvas.height] = world.size;
 };
 
 const drawScene = (state) => {

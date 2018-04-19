@@ -6,15 +6,15 @@ const xSpeed = 0.5;
 const ySpeed = 0.15;
 const size = 5;
 
-const worldBoundary = (index, world) => world.body.size[index];
+const worldBoundary = (index, world) => world.size[index];
 
 const velocity = (index, state) => {
   const { ball, input, world } = state;
   const edgeOfWorld =
-    outOfRange(0, worldBoundary(index, world), ball.body.position[index]);
+    outOfRange(0, worldBoundary(index, world), ball.position[index]);
   const leftDirection = input.left && !input.right ? -1 : null;
   const rightDirection = input.right && !input.left ? 1 : null;
-  const currentDirection = Math.sign(ball.body.velocity[index]);
+  const currentDirection = Math.sign(ball.velocity[index]);
   const direction = leftDirection || rightDirection || currentDirection;
   const velocityVector = direction * ball.speed[index];
   return negateIf(edgeOfWorld, velocityVector);
@@ -29,26 +29,22 @@ const position = (index, state) => {
    */
   const { ball, world } = state;
   const instantaneousVelocity = velocity(index, state) * stepSize;
-  const unclampedPosition = ball.body.position[index] + instantaneousVelocity;
+  const unclampedPosition = ball.position[index] + instantaneousVelocity;
   return clamp(0, worldBoundary(index, world), unclampedPosition);
 };
 
 const initialState = () => ({
-  body: {
-    size,
-    position: [0, 0],
-    velocity: [xSpeed, ySpeed],
-  },
+  size,
+  position: [0, 0],
+  velocity: [xSpeed, ySpeed],
   speed: [xSpeed, ySpeed],
 });
 
 const delta = state =>
   mergeDeepRight(state, {
     ball: {
-      body: {
-        velocity: [velocity(0, state), velocity(1, state)],
-        position: [position(0, state), position(1, state)],
-      },
+      velocity: [velocity(0, state), velocity(1, state)],
+      position: [position(0, state), position(1, state)],
     },
   });
 
