@@ -8,8 +8,7 @@ const negateIf = (test, val) => (test ? -val : val);
 // FIXME It doesn't always work like I expect. Returns the wrong value
 // sometimes? I don't know why.
 const debug = (...args) => {
-  // eslint-disable-next-line no-console
-  console.debug(...args);
+  console.debug(...args); // eslint-disable-line no-console
   return args;
 };
 
