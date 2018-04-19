@@ -1,6 +1,6 @@
 import { clamp, mergeDeepRight } from 'ramda';
 import { negateIf, outOfRange } from './util';
-import { stepSize } from './state';
+import { stepSize } from './simulation';
 
 const xSpeed = 0.5;
 const ySpeed = 0.15;
