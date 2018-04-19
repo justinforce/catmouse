@@ -53,9 +53,9 @@ const draw = () => {
   const startTime = window.performance.now(); // for debug
 
   const state = State.get();
-  const [ballX, ballY] = state.ball.box.position;
+  const [ballX, ballY] = state.ball.body.position;
   const radiusFactor = pickRandom([1 / 2, 1, 3]);
-  const ballRadius = state.ball.box.dimensions[0] * radiusFactor;
+  const ballRadius = state.ball.body.dimensions[0] * radiusFactor;
   const ballColor = pickRandom(['cyan', 'magenta', 'yellow', 'white']);
 
   // side effects
@@ -120,7 +120,7 @@ const keyToggle = (toggler) => {
 const initialState = {
   stepSize,
   world: {
-    box: {
+    body: {
       dimensions: [width, height],
     },
   },
