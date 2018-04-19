@@ -1,9 +1,6 @@
 import { contains, mergeDeepRight } from 'ramda';
 
-/**
- * The initial state of the inputs
- */
-export const initialState = () => ({
+const initialState = () => ({
   input: {
     left: false,
     right: false,
@@ -21,47 +18,36 @@ export const initialState = () => ({
  */
 let state = initialState();
 
-/**
- * Returns the changes to the input state as a subtree of the state tree.
- */
-export const delta = previousState => mergeDeepRight(previousState, state);
+const delta = previousState => mergeDeepRight(previousState, state);
 
-/**
- * Returns a function to be used as an event callback. The callback will be
- * triggered when an event like { key: key } is passed in, e.g.
- *
- *     window.addEventListener('keydown', press(State.save, 'i'));
- *
- * and State.save will be called whenever event.key === 'i'
- */
-export const press = (callback, key) => (event) => {
-  if (event.key === key) callback();
+const press = (callback, key) => {
+  const handler = (event) => { if (event.key === key) callback(); };
+
+  window.addEventListener('keydown', handler);
 };
 
-/**
- * Returns a function to be used as an event callback. Set
- * state.input[input] = true when the flag === true, and false when
- * flag === false. By currying (input, keys) separately from flag, we can easily
- * set up handlers for enabling and disabling the input, e.g.
- *
- *     const toggler = toggle('left', 'ArrowLeft j J a A');
- *     window.addEventListener('keydown', toggler(true));
- *     window.addEventListener('keyup', toggler(false));
- *
- * And now state.input.left will be set to true when any of the specified keys
- * are pressed and false when they're released.
- */
-export const toggle = (input, keys) => flag => (event) => {
-  const { key } = event;
-  if (contains(key, keys.split(' '))) {
-    const inputDelta = {
-      input: {
-        [input]: flag,
-      },
-    };
-    const newState = mergeDeepRight(state, inputDelta);
+const toggle = (input, keys) => {
+  const toggler = flag => (event) => {
+    const { key } = event;
+    if (contains(key, keys.split(' '))) {
+      const inputDelta = {
+        input: {
+          [input]: flag,
+        },
+      };
+      const newState = mergeDeepRight(state, inputDelta);
 
-    // side effects
-    state = newState;
-  }
+      state = newState;
+    }
+  };
+
+  window.addEventListener('keydown', toggler(true));
+  window.addEventListener('keyup', toggler(false));
+};
+
+export {
+  delta,
+  initialState,
+  press,
+  toggle,
 };

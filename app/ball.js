@@ -1,21 +1,22 @@
 import { clamp, mergeDeepRight } from 'ramda';
 import { negateIf, outOfRange } from './util';
+import { stepSize } from './state';
 
 const xSpeed = 0.5;
 const ySpeed = 0.15;
-const radius = 5;
-const diameter = radius * 2;
+const size = 5;
 
-const worldBoundary = (index, state) => state.world.body.dimensions[index];
+const worldBoundary = (index, world) => world.body.size[index];
 
 const velocity = (index, state) => {
+  const { ball, input, world } = state;
   const edgeOfWorld =
-    outOfRange(0, worldBoundary(index, state), state.ball.body.position[index]);
-  const leftDirection = state.input.left && !state.input.right ? -1 : null;
-  const rightDirection = state.input.right && !state.input.left ? 1 : null;
-  const currentDirection = Math.sign(state.ball.body.velocity[index]);
+    outOfRange(0, worldBoundary(index, world), ball.body.position[index]);
+  const leftDirection = input.left && !input.right ? -1 : null;
+  const rightDirection = input.right && !input.left ? 1 : null;
+  const currentDirection = Math.sign(ball.body.velocity[index]);
   const direction = leftDirection || rightDirection || currentDirection;
-  const velocityVector = direction * state.ball.speed[index];
+  const velocityVector = direction * ball.speed[index];
   return negateIf(edgeOfWorld, velocityVector);
 };
 
@@ -26,24 +27,22 @@ const position = (index, state) => {
    * This makes the simulation run at a consistent speed regardless of frame
    * rate.
    */
-  const instantaneousVelocity = velocity(index, state) * state.stepSize;
-  const unclampedPosition = state.ball.body.position[index] + instantaneousVelocity;
-  return clamp(0, worldBoundary(index, state), unclampedPosition);
+  const { ball, world } = state;
+  const instantaneousVelocity = velocity(index, state) * stepSize;
+  const unclampedPosition = ball.body.position[index] + instantaneousVelocity;
+  return clamp(0, worldBoundary(index, world), unclampedPosition);
 };
 
-export const initialState = () => ({
+const initialState = () => ({
   body: {
+    size,
     position: [0, 0],
-    dimensions: [diameter, diameter],
     velocity: [xSpeed, ySpeed],
   },
   speed: [xSpeed, ySpeed],
 });
 
-/**
- * Returns the changes to the ball's state as a subtree of the state tree.
- */
-export const delta = state =>
+const delta = state =>
   mergeDeepRight(state, {
     ball: {
       body: {
@@ -52,3 +51,8 @@ export const delta = state =>
       },
     },
   });
+
+export {
+  delta,
+  initialState,
+};
