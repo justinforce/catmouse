@@ -28,6 +28,7 @@ const init = () => {
   const initialWorldState = World.initialState();
   const initialPlayerState = Player.initialState(initialWorldState.size);
   const initialState = {
+    step: 0,
     ball: Ball.initialState(),
     input: Input.initialState(),
     player: initialPlayerState,
@@ -40,7 +41,7 @@ const init = () => {
 };
 
 const delta = (inputState) => {
-  const newStep = inputState.world.step + 1;
+  const newStep = inputState.step + 1;
   return mergeDeepRight(inputState, {
     step: newStep,
   });
