@@ -30,8 +30,8 @@ const drawPlayer = (player) => {
   drawCircle(player.position, player.size, 'magenta');
 };
 
-const init = (world) => {
-  [canvas.width, canvas.height] = world.size;
+const setCanvasSize = (size) => {
+  [canvas.width, canvas.height] = size;
 };
 
 const drawScene = (state) => {
@@ -44,5 +44,5 @@ const drawScene = (state) => {
 
 export {
   drawScene,
-  init,
+  setCanvasSize,
 };

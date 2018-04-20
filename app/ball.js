@@ -1,26 +1,30 @@
 import { clamp, mergeDeepRight } from 'ramda';
 import { negateIf, outOfRange } from './util';
-import { stepSize } from './simulation';
 
 const xSpeed = 0.5;
 const ySpeed = 0.15;
 const size = 5;
 
-const worldBoundary = (index, world) => world.size[index];
+const worldBoundary = (axis, world) => world.size[axis];
 
-const velocity = (index, state) => {
+const axisVelocity = (axis, state) => {
   const { ball, input, world } = state;
   const edgeOfWorld =
-    outOfRange(0, worldBoundary(index, world), ball.position[index]);
-  const leftDirection = input.left && !input.right ? -1 : null;
-  const rightDirection = input.right && !input.left ? 1 : null;
-  const currentDirection = Math.sign(ball.velocity[index]);
-  const direction = leftDirection || rightDirection || currentDirection;
-  const velocityVector = direction * ball.speed[index];
+    outOfRange(0, worldBoundary(axis, world), ball.position[axis]);
+  const left = axis === 0 && input.left && !input.right ? -1 : null;
+  const right = axis === 0 && input.right && !input.left ? 1 : null;
+  const currentDirection = Math.sign(ball.velocity[axis]);
+  const direction = left || right || currentDirection;
+  const velocityVector = direction * ball.speed[axis];
   return negateIf(edgeOfWorld, velocityVector);
 };
 
-const position = (index, state) => {
+const velocity = state => [
+  axisVelocity(0, state),
+  axisVelocity(1, state),
+];
+
+const axisPosition = (stepSize, axis, state, inputVelocity) => {
   /**
    * Multiply velocity by stepSize to get an instantaneous velocity value
    * for this interval that automatically scales with the target frame rate.
@@ -28,10 +32,15 @@ const position = (index, state) => {
    * rate.
    */
   const { ball, world } = state;
-  const instantaneousVelocity = velocity(index, state) * stepSize;
-  const unclampedPosition = ball.position[index] + instantaneousVelocity;
-  return clamp(0, worldBoundary(index, world), unclampedPosition);
+  const instantaneousVelocity = inputVelocity[axis] * stepSize;
+  const unclampedPosition = ball.position[axis] + instantaneousVelocity;
+  return clamp(0, worldBoundary(axis, world), unclampedPosition);
 };
+
+const position = (stepSize, state, inputVelocity) => [
+  axisPosition(stepSize, 0, state, inputVelocity),
+  axisPosition(stepSize, 1, state, inputVelocity),
+];
 
 const initialState = () => ({
   size,
@@ -40,13 +49,16 @@ const initialState = () => ({
   speed: [xSpeed, ySpeed],
 });
 
-const delta = state =>
-  mergeDeepRight(state, {
+const delta = stepSize => (state) => {
+  const vel = velocity(state);
+  const pos = position(stepSize, state, vel);
+  return mergeDeepRight(state, {
     ball: {
-      velocity: [velocity(0, state), velocity(1, state)],
-      position: [position(0, state), position(1, state)],
+      velocity: vel,
+      position: pos,
     },
   });
+};
 
 export {
   delta,
