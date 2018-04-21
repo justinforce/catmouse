@@ -12,11 +12,7 @@ const timeStep = 1000 / 60;
 
 const delta = state => mergeDeepRight(state, { step: state.step + 1 });
 
-/**
- * Step the simulation forward a single increment. If the framerate drops, call
- * this multiple times to catch up. See handleFrame for more information.
- */
-const step = () => {
+const tick = () => {
   const newState = pipe(
     Input.delta,
     World.delta,
@@ -28,18 +24,14 @@ const step = () => {
   State.set(newState);
 };
 
-/**
- * Returns a function to be used as the callback to requestAnimationFrame which
- * updates the entire simulation and draws the scene for a single frame.
- */
-const handleFrame = (prevFrameTimestamp, prevLeftoverTime) => (now) => {
+const step = (prevFrameTimestamp, prevLeftoverTime) => (now) => {
   const firstFrame = prevFrameTimestamp === 0;
   const timeToSimulate = prevLeftoverTime + (now - prevFrameTimestamp);
-  const stepCount = firstFrame ? 1 : Math.floor(timeToSimulate / timeStep);
+  const ticks = firstFrame ? 1 : Math.floor(timeToSimulate / timeStep);
   const leftoverTime = timeToSimulate % timeStep;
 
-  requestAnimationFrame(handleFrame(now, leftoverTime));
-  times(step, stepCount);
+  requestAnimationFrame(step(now, leftoverTime));
+  times(tick, ticks);
   Drawing.drawScene(State.get());
 };
 
@@ -67,4 +59,4 @@ Input.toggle('left', 'ArrowLeft j J a A');
 Input.toggle('right', 'ArrowRight l L d D');
 
 // Start simulation
-requestAnimationFrame(handleFrame(0, 0));
+requestAnimationFrame(step(0, 0));
