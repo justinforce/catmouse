@@ -22,7 +22,6 @@ const drawBall = (ball) => {
   const radiusFactor = pickRandom([1, 2, 6]);
   const radius = ball.size * radiusFactor;
   const color = pickRandom(['cyan', 'magenta', 'yellow', 'white']);
-
   drawCircle(ball.position, radius, color);
 };
 
@@ -36,7 +35,6 @@ const setCanvasSize = (size) => {
 
 const drawScene = (state) => {
   const { world, ball, player } = state;
-
   drawBackground(world);
   drawBall(ball);
   drawPlayer(player);

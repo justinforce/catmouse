@@ -20,7 +20,6 @@ const tick = () => {
     Ball.delta(timeStep),
     delta,
   )(State.get());
-
   State.set(newState);
 };
 
@@ -29,7 +28,6 @@ const step = (prevFrameTimestamp, prevLeftoverTime) => (now) => {
   const timeToSimulate = prevLeftoverTime + (now - prevFrameTimestamp);
   const ticks = firstFrame ? 1 : Math.floor(timeToSimulate / timeStep);
   const leftoverTime = timeToSimulate % timeStep;
-
   requestAnimationFrame(step(now, leftoverTime));
   times(tick, ticks);
   Drawing.drawScene(State.get());
@@ -46,7 +44,7 @@ const initialState = {
   world: initialWorldState,
 };
 State.set(initialState);
-State.save(); // save immediately so there's something to load
+State.save(); // save immediately so there's something to load (free reset!)
 
 // Initialize drawing
 const { world } = State.get();

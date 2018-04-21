@@ -22,7 +22,6 @@ const delta = previousState => mergeDeepRight(previousState, state);
 
 const press = (callback, key) => {
   const handler = (event) => { if (event.key === key) callback(); };
-
   window.addEventListener('keydown', handler);
 };
 
@@ -36,11 +35,9 @@ const toggle = (input, keys) => {
         },
       };
       const newState = mergeDeepRight(state, inputDelta);
-
       state = newState;
     }
   };
-
   window.addEventListener('keydown', toggler(true));
   window.addEventListener('keyup', toggler(false));
 };
