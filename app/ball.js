@@ -1,8 +1,8 @@
 import { clamp, mergeDeepRight } from 'ramda';
 import { negateIf, outOfRange } from './util';
 
-const xSpeed = 0.5;
-const ySpeed = 0.15;
+const xSpeed = 100;
+const ySpeed = 50;
 const size = 5;
 
 const worldBoundary = (axis, world) => world.size[axis];
@@ -25,14 +25,8 @@ const velocity = state => [
 ];
 
 const axisPosition = (stepSize, axis, state, inputVelocity) => {
-  /**
-   * Multiply velocity by stepSize to get an instantaneous velocity value
-   * for this interval that automatically scales with the target frame rate.
-   * This makes the simulation run at a consistent speed regardless of frame
-   * rate.
-   */
   const { ball, world } = state;
-  const instantaneousVelocity = inputVelocity[axis] * stepSize;
+  const instantaneousVelocity = inputVelocity[axis] / stepSize;
   const unclampedPosition = ball.position[axis] + instantaneousVelocity;
   return clamp(0, worldBoundary(axis, world), unclampedPosition);
 };
