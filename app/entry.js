@@ -16,7 +16,7 @@ const tick = () => {
   const newState = pipe(
     Input.delta,
     World.delta,
-    Player.delta,
+    Player.delta(timeStep),
     Ball.delta(timeStep),
     delta,
   )(State.get());

@@ -22,11 +22,14 @@ const polarToCartesian = vector => [
   vector[0] * Math.sin(vector[1]),
 ];
 
+const scaleVector = (scalar, vector) => vector.map(v => scalar * v);
+
 export {
   addVectors,
-  polarToCartesian,
   debug,
   negateIf,
   outOfRange,
   pickRandom,
+  polarToCartesian,
+  scaleVector,
 };
