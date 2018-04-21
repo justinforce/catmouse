@@ -15,7 +15,16 @@ const debug = (...args) => {
 // Returns a random item from list
 const pickRandom = list => list[Math.floor(Math.random() * list.length)];
 
+const addVectors = (a, b) => [a[0] + b[0], a[1] + b[1]];
+
+const polarToCartesian = vector => [
+  vector[0] * Math.cos(vector[1]),
+  vector[0] * Math.sin(vector[1]),
+];
+
 export {
+  addVectors,
+  polarToCartesian,
   debug,
   negateIf,
   outOfRange,
