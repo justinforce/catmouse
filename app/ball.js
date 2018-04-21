@@ -24,16 +24,16 @@ const velocity = state => [
   axisVelocity(1, state),
 ];
 
-const axisPosition = (stepSize, axis, state, inputVelocity) => {
+const axisPosition = (timeStep, axis, state, inputVelocity) => {
   const { ball, world } = state;
-  const instantaneousVelocity = inputVelocity[axis] / stepSize;
+  const instantaneousVelocity = inputVelocity[axis] / timeStep;
   const unclampedPosition = ball.position[axis] + instantaneousVelocity;
   return clamp(0, worldBoundary(axis, world), unclampedPosition);
 };
 
-const position = (stepSize, state, inputVelocity) => [
-  axisPosition(stepSize, 0, state, inputVelocity),
-  axisPosition(stepSize, 1, state, inputVelocity),
+const position = (timeStep, state, inputVelocity) => [
+  axisPosition(timeStep, 0, state, inputVelocity),
+  axisPosition(timeStep, 1, state, inputVelocity),
 ];
 
 const initialState = () => ({
@@ -43,9 +43,9 @@ const initialState = () => ({
   speed: [xSpeed, ySpeed],
 });
 
-const delta = stepSize => (state) => {
+const delta = timeStep => (state) => {
   const vel = velocity(state);
-  const pos = position(stepSize, state, vel);
+  const pos = position(timeStep, state, vel);
   return mergeDeepRight(state, {
     ball: {
       velocity: vel,
