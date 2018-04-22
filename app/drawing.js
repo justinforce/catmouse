@@ -22,7 +22,7 @@ const drawBackground = (world) => {
 };
 
 const drawBall = (ball) => {
-  const radiusFactor = pickRandom([1, 2, 6]);
+  const radiusFactor = pickRandom([0.25, 0.5, 1]);
   const radius = ball.size * radiusFactor;
   const color = pickRandom(colors);
   drawCircle(ball.position, radius, color);

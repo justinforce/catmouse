@@ -3,7 +3,7 @@ import { negateIf, outOfRange } from './util';
 
 const xSpeed = 100;
 const ySpeed = 50;
-const size = 5;
+const size = 20;
 
 const worldBoundary = (axis, world) => world.size[axis];
 

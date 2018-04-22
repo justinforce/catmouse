@@ -24,8 +24,13 @@ const polarToCartesian = vector => [
 
 const scaleVector = (scalar, vector) => vector.map(v => scalar * v);
 
+const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const collide = (aPosition, aSize, bPosition, bSize) =>
+  distance(aPosition, bPosition) <= (aSize + bSize);
+
 export {
   addVectors,
+  collide,
   debug,
   negateIf,
   outOfRange,
