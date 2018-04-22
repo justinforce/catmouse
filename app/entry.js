@@ -53,8 +53,10 @@ Drawing.setCanvasSize(world.size);
 // Initialize controls
 Input.press(State.save, 'i');
 Input.press(State.load, 'o');
-Input.toggle('left', 'ArrowLeft j J a A');
-Input.toggle('right', 'ArrowRight l L d D');
+Input.toggle('down', 'ArrowDown s S');
+Input.toggle('left', 'ArrowLeft a A');
+Input.toggle('right', 'ArrowRight d D');
+Input.toggle('up', 'ArrowUp w W ');
 
 // Start simulation
 requestAnimationFrame(step(0, 0));

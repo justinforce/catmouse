@@ -3,13 +3,17 @@ import { addVectors, polarToCartesian, scaleVector } from './util';
 
 const speed = 75;
 const turnRate = Math.PI / 32;
-const size = 5;
+const size = 10;
+const minLength = 10;
+const maxLength = 1000;
+const lengthIncrement = 5;
 
 const initialState = (worldSize) => {
-  const position = worldSize.map(axis => axis / 2);
+  const positions = [worldSize.map(axis => axis / 2)];
   return {
-    position,
+    positions,
     size,
+    length: minLength,
     velocity: [speed, 0],
   };
 };
@@ -26,25 +30,39 @@ const velocity = (state) => {
 };
 
 // Returns the position in cartesian
-const position = (state, timeStep, newVelocity) => {
+const nextPosition = (state, timeStep, newVelocity) => {
   const { player, world } = state;
   const cartesianVelocity = polarToCartesian(newVelocity);
   const displacement = scaleVector((1 / timeStep), cartesianVelocity);
-  const newPosition = addVectors(player.position, displacement);
-  const x = clamp(0, world.size[0], newPosition[0]);
-  const y = clamp(0, world.size[1], newPosition[1]);
+  const position = addVectors(player.positions[0], displacement);
+  const x = clamp(0, world.size[0], position[0]);
+  const y = clamp(0, world.size[1], position[1]);
   return [x, y];
+};
+
+const nextLength = (state) => {
+  const { input, player } = state;
+  const canChangeSize = player.length === player.positions.length;
+  const up = canChangeSize && input.up ? lengthIncrement : 0;
+  const down = canChangeSize && input.down ? -lengthIncrement : 0;
+  return clamp(minLength, maxLength, (player.length + up + down));
 };
 
 const delta = timeStep => (state) => {
   /* Use the new velocity as the input to position instead of the previous one
    * to achieve semi-implicit Euler integration which should help us converge to
    * accuracy. This helps: https://gafferongames.com/post/integration_basics/ */
+  const { player } = state;
   const newVelocity = velocity(state);
-  const newPosition = position(state, timeStep, newVelocity);
+  const positions = [
+    nextPosition(state, timeStep, newVelocity),
+    ...player.positions,
+  ].slice(0, player.length);
+  const newLength = nextLength(state);
   return mergeDeepRight(state, {
     player: {
-      position: newPosition,
+      positions,
+      length: newLength,
       velocity: newVelocity,
     },
   });
