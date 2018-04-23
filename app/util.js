@@ -1,6 +1,9 @@
 // Returns false if low < val < high, otherwise returns true.
 const outOfRange = (low, high, val) => val <= low || val >= high;
 
+// Returns true if low <= val <= high, otherwise returns false.
+const inRange = (low, high, val) => val >= low && val <= high;
+
 // Negates val if test is false, otherwise returns val
 const negateIf = (test, val) => (test ? -val : val);
 
@@ -28,6 +31,10 @@ const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const collide = (aPosition, aSize, bPosition, bSize) =>
   distance(aPosition, bPosition) <= (aSize + bSize);
 
+const pointInsideBox = (box, point) =>
+  inRange(box[0][0], box[1][0], point[0]) &&
+  inRange(box[0][1], box[1][1], point[1]);
+
 export {
   addVectors,
   collide,
@@ -35,6 +42,7 @@ export {
   negateIf,
   outOfRange,
   pickRandom,
+  pointInsideBox,
   polarToCartesian,
   scaleVector,
 };

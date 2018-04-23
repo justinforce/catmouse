@@ -58,6 +58,7 @@ const drawScene = (state) => {
 };
 
 export {
+  canvas,
   drawScene,
   setCanvasSize,
 };

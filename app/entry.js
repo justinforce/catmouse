@@ -50,13 +50,51 @@ State.save(); // save immediately so there's something to load (free reset!)
 const { world } = State.get();
 Drawing.setCanvasSize(world.size);
 
-// Initialize controls
+// Keyboard controls
 Input.press(State.save, 'i');
 Input.press(State.load, 'o');
 Input.toggle('down', 'ArrowDown s S');
 Input.toggle('left', 'ArrowLeft a A');
 Input.toggle('right', 'ArrowRight d D');
 Input.toggle('up', 'ArrowUp w W ');
+
+// Mouse/touch controls
+const [width, height] = world.size;
+const leftRightTouchBoxScale = [1 / 3, 1];
+const topBottomTouchBoxScale = [1 / 4, 1 / 4];
+const leftTouchBox = [
+  [0, 0],
+  [width * leftRightTouchBoxScale[0], height * leftRightTouchBoxScale[1]],
+];
+const rightTouchBox = [
+  [width - (width * leftRightTouchBoxScale[0]), 0],
+  [width, height * leftRightTouchBoxScale[1]],
+];
+
+const topTouchBox = [
+  [(width - (width / 2)) - (width * topBottomTouchBoxScale[0]), 0],
+  [(width - (width / 2)) + (width * topBottomTouchBoxScale[0]),
+    height * topBottomTouchBoxScale[1]],
+];
+
+const bottomTouchBox = [
+  [(width - (width / 2)) - (width * topBottomTouchBoxScale[0]),
+    height - (height * topBottomTouchBoxScale[1])],
+  [(width - (width / 2)) + (width * topBottomTouchBoxScale[0]),
+    height],
+];
+
+Input.clickToggle('left', leftTouchBox, Drawing.canvas);
+Input.clickToggle('right', rightTouchBox, Drawing.canvas);
+Input.clickToggle('up', topTouchBox, Drawing.canvas);
+Input.clickToggle('down', bottomTouchBox, Drawing.canvas);
+Input.touchToggle('left', leftTouchBox, Drawing.canvas);
+Input.touchToggle('right', rightTouchBox, Drawing.canvas);
+Input.touchToggle('up', topTouchBox, Drawing.canvas);
+Input.touchToggle('down', bottomTouchBox, Drawing.canvas);
+
+// Prevent context menu from long pressing canvas
+Drawing.canvas.addEventListener('contextmenu', (event)=> { event.preventDefault() });
 
 // Start simulation
 requestAnimationFrame(step(0, 0));
