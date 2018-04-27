@@ -96,7 +96,9 @@ Input.touchToggle('up', topTouchBox, Drawing.canvas);
 Input.touchToggle('down', bottomTouchBox, Drawing.canvas);
 
 // Prevent context menu from long pressing canvas
-Drawing.canvas.addEventListener('contextmenu', (event)=> { event.preventDefault() });
+Drawing.canvas.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+});
 
 // Start simulation
 requestAnimationFrame(step(0, 0));
