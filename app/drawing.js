@@ -29,21 +29,12 @@ const drawBall = (ball) => {
 };
 
 const drawPlayer = (player) => {
-  /* I found it really hard to figure out a function to get the correct color so
-   * the head is always white. I know it's simple math. I cannot do it right
-   * now. I hate myself. For now, associate the colors with the positions up
-   * front, then draw them. */
-  const positionsAndColors = addIndex(map)(
-    (position, index) => ({ position, color: colors[index % colors.length] }),
-    player.positions,
-  );
-
   /* Draw it backwards so the head is drawn on top, and you run over yourself
    * instead of under yourself. */
-  forEach(
-    pac => drawCircle(pac.position, player.size, pac.color),
-    reverse(positionsAndColors),
-  );
+  addIndex(forEach)((position, index) => {
+    const color = colors[(player.positions.length - index - 1) % colors.length];
+    drawCircle(position, player.size, color);
+  }, reverse(player.positions));
 };
 
 const setCanvasSize = (size) => {
