@@ -1,4 +1,4 @@
-import { pipe, times, mergeDeepRight } from 'ramda';
+import { clamp, pipe, times, mergeDeepRight } from 'ramda';
 import './style.css';
 import * as Ball from './ball';
 import * as Drawing from './drawing';
@@ -9,6 +9,9 @@ import * as Player from './player';
 
 // Milliseconds to skip between simulation iterations
 const timeStep = 1000 / 60;
+
+// Cap ticks so the tab doesn't lock up after being forgotten in the background
+const maxTicks = Math.floor(timeStep);
 
 const delta = state => mergeDeepRight(state, { step: state.step + 1 });
 
@@ -24,9 +27,8 @@ const tick = () => {
 };
 
 const step = (prevFrameTimestamp, prevLeftoverTime) => (now) => {
-  const firstFrame = prevFrameTimestamp === 0;
   const timeToSimulate = prevLeftoverTime + (now - prevFrameTimestamp);
-  const ticks = firstFrame ? 1 : Math.floor(timeToSimulate / timeStep);
+  const ticks = clamp(0, maxTicks, Math.floor(timeToSimulate / timeStep));
   const leftoverTime = timeToSimulate % timeStep;
   requestAnimationFrame(step(now, leftoverTime));
   times(tick, ticks);
