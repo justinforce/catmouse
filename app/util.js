@@ -1,3 +1,5 @@
+import { map } from 'ramda';
+
 // Returns false if low < val < high, otherwise returns true.
 const outOfRange = (low, high, val) => val <= low || val >= high;
 
@@ -25,7 +27,7 @@ const polarToCartesian = vector => [
   vector[0] * Math.sin(vector[1]),
 ];
 
-const scaleVector = (scalar, vector) => vector.map(v => scalar * v);
+const scaleVector = (scalar, vector) => map(v => scalar * v, vector);
 
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const collide = (aPosition, aSize, bPosition, bSize) =>

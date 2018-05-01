@@ -1,5 +1,5 @@
 import { contains, mergeDeepRight } from 'ramda';
-import { debug, pointInsideBox } from './util';
+import { pointInsideBox } from './util';
 
 const initialState = () => ({
   input: {

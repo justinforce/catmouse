@@ -1,4 +1,4 @@
-import { addIndex, forEach, map, reverse } from 'ramda';
+import { addIndex, forEach, reverse } from 'ramda';
 import { pickRandom } from './util';
 
 const ONE_TURN = 2 * Math.PI;

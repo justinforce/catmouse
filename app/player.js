@@ -9,12 +9,12 @@ const maxLength = 1000;
 const lengthIncrement = 10;
 
 const initialState = (worldSize) => {
-  const positions = [worldSize.map(axis => axis / 2)];
+  const positions = [[worldSize[0] / 2, worldSize[1]]];
   return {
     positions,
     size,
     length: minLength,
-    velocity: [speed, 0],
+    velocity: [speed, Math.PI / -2],
   };
 };
 
