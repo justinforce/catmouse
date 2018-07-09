@@ -1,8 +1,11 @@
+// TODO Need to DRY up all the toggle/toggler code
+
 import { contains, mergeDeepRight } from 'ramda';
 import { pointInsideBox } from './util';
 
 const initialState = () => ({
   input: {
+    ai: false,
     left: false,
     right: false,
   },
@@ -37,6 +40,16 @@ const set = (input, flag) => {
 };
 
 const toggle = (input, keys) => {
+  const toggler = (event) => {
+    const { key } = event;
+    if (contains(key, keys.split(' '))) {
+      set(input, !state.input[input]);
+    }
+  };
+  window.addEventListener('keydown', toggler);
+};
+
+const hold = (input, keys) => {
   const toggler = flag => (event) => {
     const { key } = event;
     if (contains(key, keys.split(' '))) {
@@ -47,7 +60,7 @@ const toggle = (input, keys) => {
   window.addEventListener('keyup', toggler(false));
 };
 
-const clickToggle = (input, box, canvas) => {
+const clickHold = (input, box, canvas) => {
   const toggler = flag => (event) => {
     if (event.touches) return;
     const point = [event.offsetX, event.offsetY];
@@ -59,7 +72,7 @@ const clickToggle = (input, box, canvas) => {
   canvas.addEventListener('mouseup', toggler(false));
 };
 
-const touchToggle = (input, box, canvas) => {
+const touchHold = (input, box, canvas) => {
   canvas.addEventListener('touchstart', (event) => {
     if (!event.touches[0]) return;
     const boundingRectangle = event.target.getBoundingClientRect();
@@ -75,10 +88,11 @@ const touchToggle = (input, box, canvas) => {
 };
 
 export {
-  clickToggle,
+  clickHold,
   delta,
+  hold,
   initialState,
   press,
   toggle,
-  touchToggle,
+  touchHold,
 };

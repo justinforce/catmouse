@@ -27,6 +27,11 @@ const polarToCartesian = vector => [
   vector[0] * Math.sin(vector[1]),
 ];
 
+const cartesianToPolar = vector => [
+  Math.hypot(vector[0], vector[1]),
+  Math.atan2(vector[0], vector[1]),
+];
+
 const scaleVector = (scalar, vector) => map(v => scalar * v, vector);
 
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
@@ -37,9 +42,13 @@ const pointInsideBox = (box, point) =>
   inRange(box[0][0], box[1][0], point[0]) &&
   inRange(box[0][1], box[1][1], point[1]);
 
+const angleBetween = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]);
+
 export {
   addVectors,
+  angleBetween,
   collide,
+  cartesianToPolar,
   debug,
   negateIf,
   outOfRange,

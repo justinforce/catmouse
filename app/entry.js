@@ -3,6 +3,7 @@ import './style.css';
 import * as Ball from './ball';
 import * as Drawing from './drawing';
 import * as Input from './input';
+import * as Ai from './ai';
 import * as State from './state';
 import * as World from './world';
 import * as Player from './player';
@@ -18,6 +19,7 @@ const delta = state => mergeDeepRight(state, { step: state.step + 1 });
 const tick = () => {
   const newState = pipe(
     Input.delta,
+    Ai.delta,
     World.delta,
     Player.delta(timeStep),
     Ball.delta(timeStep),
@@ -40,6 +42,7 @@ const initialWorldState = World.initialState();
 const initialPlayerState = Player.initialState(initialWorldState.size);
 const initialState = {
   step: 0,
+  ai: Ai.initialState(),
   ball: Ball.initialState(),
   input: Input.initialState(),
   player: initialPlayerState,
@@ -55,10 +58,11 @@ Drawing.setCanvasSize(world.size);
 // Keyboard controls
 Input.press(State.save, 'i');
 Input.press(State.load, 'o');
-Input.toggle('down', 'ArrowDown s S');
-Input.toggle('left', 'ArrowLeft a A');
-Input.toggle('right', 'ArrowRight d D');
-Input.toggle('up', 'ArrowUp w W ');
+Input.hold('down', 'ArrowDown s S');
+Input.hold('left', 'ArrowLeft a A');
+Input.hold('right', 'ArrowRight d D');
+Input.hold('up', 'ArrowUp w W ');
+Input.toggle('ai', '1');
 
 // Mouse/touch controls
 const [width, height] = world.size;
@@ -86,14 +90,14 @@ const bottomTouchBox = [
     height],
 ];
 
-Input.clickToggle('left', leftTouchBox, Drawing.canvas);
-Input.clickToggle('right', rightTouchBox, Drawing.canvas);
-Input.clickToggle('up', topTouchBox, Drawing.canvas);
-Input.clickToggle('down', bottomTouchBox, Drawing.canvas);
-Input.touchToggle('left', leftTouchBox, Drawing.canvas);
-Input.touchToggle('right', rightTouchBox, Drawing.canvas);
-Input.touchToggle('up', topTouchBox, Drawing.canvas);
-Input.touchToggle('down', bottomTouchBox, Drawing.canvas);
+Input.clickHold('left', leftTouchBox, Drawing.canvas);
+Input.clickHold('right', rightTouchBox, Drawing.canvas);
+Input.clickHold('up', topTouchBox, Drawing.canvas);
+Input.clickHold('down', bottomTouchBox, Drawing.canvas);
+Input.touchHold('left', leftTouchBox, Drawing.canvas);
+Input.touchHold('right', rightTouchBox, Drawing.canvas);
+Input.touchHold('up', topTouchBox, Drawing.canvas);
+Input.touchHold('down', bottomTouchBox, Drawing.canvas);
 
 // Prevent context menu from long pressing canvas
 Drawing.canvas.addEventListener('contextmenu', (event) => {
