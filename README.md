@@ -12,6 +12,12 @@ Bugs
   over the place. It works in practice with manual control because it's all
   relative, but weird stuff happens when the snake starts chasing the ball.
 
+TODO
+----
+
+1. It's time to address state performance. It's too expensive to copy native
+  JavaScript objects around.
+2. Add debug display as togglable filter like AI.
 
 License and Copyright
 ---------------------
