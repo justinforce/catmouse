@@ -19,6 +19,12 @@ TODO
   JavaScript objects around.
 2. Add debug display as togglable filter like AI.
 
+Ideas
+-----
+
+* Make render resolution adjustable. Would it look cool with the same graphics
+  but much lower resolution? It might...
+
 License and Copyright
 ---------------------
 
