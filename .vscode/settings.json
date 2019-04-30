@@ -1,0 +1,8 @@
+{
+  "cSpell.ignorePaths": ["**/aws-exports.js"],
+  "cSpell.words": [
+    "displayname",
+    "polyfill",
+    "tortious"
+  ]
+}
