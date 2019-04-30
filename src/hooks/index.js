@@ -1,4 +1,4 @@
-import useInterval from "./useInterval";
+import useInterval from './useInterval'
 
 // eslint-disable-next-line import/prefer-default-export
-export { useInterval };
+export { useInterval }

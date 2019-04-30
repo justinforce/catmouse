@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react'
 
 /**
  * This function is based on https://github.com/Hermanya/use-interval (MIT License), but
@@ -34,14 +34,14 @@ import { useEffect, useRef } from "react";
  * };
  */
 const useInterval = (callback, delay) => {
-  const callbackRef = useRef();
+  const callbackRef = useRef()
   useEffect(() => {
-    callbackRef.current = callback;
-  });
+    callbackRef.current = callback
+  })
   useEffect(() => {
-    const id = setInterval(() => callbackRef.current(), delay);
-    return () => clearInterval(id);
-  }, [delay]);
-};
+    const id = setInterval(() => callbackRef.current(), delay)
+    return () => clearInterval(id)
+  }, [delay])
+}
 
-export default useInterval;
+export default useInterval

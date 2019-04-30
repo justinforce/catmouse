@@ -4,7 +4,7 @@
   "description": "Later...",
   "scripts": {
     "dev": "webpack-dev-server",
-    "lint": "eslint src *.js",
+    "lint": "eslint scripts src *.js",
     "start": "serve dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "mystery-deps": "node scripts/mystery-deps.js",
