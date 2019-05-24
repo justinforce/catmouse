@@ -1,25 +1,39 @@
 import { Sprite } from 'pixi.js'
 import { Bunny } from './images'
-import { randIn } from './util'
+import { AppType, SimulationType } from './types'
 
-const createBunny = ({ app, width, height }, x, y, speed) => {
+const DEFAULT_SPEED = 0.05
+
+const createBunny = ({
+  app = AppType,
+  x = 0,
+  y = 0,
+  speed = DEFAULT_SPEED,
+  rotation = 0,
+} = {}) => {
   const bunny = new Sprite(app.loader.resources[Bunny].texture)
   bunny.anchor.set(0.5)
-  bunny.x = x || randIn(0, width)
-  bunny.y = y || randIn(0, height)
-  bunny.speed = speed || randIn(-0.5, 0.5)
-  bunny.rotation = 0
+  bunny.x = x
+  bunny.y = y
+  bunny.speed = speed
+  bunny.rotation = rotation
   return bunny
 }
 
-const addBunny = (simulation, x, y, speed) => {
-  const { app, bunnies } = simulation
-  const bunny = createBunny(simulation, x, y, speed)
-  simulation.bunnies = [...bunnies, bunny] // eslint-disable-line no-param-reassign
+const addBunny = ({
+  simulation = SimulationType,
+  x = 0,
+  y = 0,
+  speed = DEFAULT_SPEED,
+} = {}) => {
+  const { app } = simulation
+  const bunny = createBunny({ app, x, y, speed })
+  simulation.bunnies.push(bunny) // eslint-disable-line no-param-reassign
   app.stage.addChild(bunny)
+  return bunny
 }
 
-const tickBunnies = (simulation, delta) => {
+const tickBunnies = (simulation = SimulationType, delta = 1) => {
   /* eslint-disable no-param-reassign */
   const { bunnies } = simulation
   bunnies.forEach(bunny => (bunny.rotation += bunny.speed * delta))
