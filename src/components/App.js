@@ -1,12 +1,35 @@
-import { Typography } from '@material-ui/core'
-import PropTypes from 'prop-types'
+import { CssBaseline } from '@material-ui/core'
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import React from 'react'
+import { hot } from 'react-hot-loader/root'
+import { PRODUCTION } from '../../env'
+import Sim from './Sim'
 
-const App = ({ name }) => {
-  return <Typography variant="h1">{name}</Typography>
-}
-App.propTypes = {
-  name: PropTypes.string.isRequired,
-}
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+})
 
-export default App
+const App = () => {
+  return (
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+      />
+      <style>
+        {`
+        html,
+        body,
+        body > div {
+          height: 100%;
+        }
+      `}
+      </style>
+      <Sim />
+    </MuiThemeProvider>
+  )
+}
+export default (PRODUCTION ? App : hot(App))

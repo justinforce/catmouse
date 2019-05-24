@@ -1,4 +1,4 @@
+import Bunny from './Bunny.png'
 import Favicon from './Favicon.png'
 
-// eslint-disable-next-line import/prefer-default-export
-export { Favicon }
+export { Bunny, Favicon }

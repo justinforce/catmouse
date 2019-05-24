@@ -33,4 +33,29 @@ const pick = list => list[Math.floor(Math.random() * list.length)]
  */
 const sanitize = input => (input ? input.trim().toLowerCase() : '')
 
-export { compare, isString, pick, sanitize }
+const noop = () => {}
+
+const copyProps = (props, from, to) => {
+  /* eslint-disable no-param-reassign */
+  props.forEach(prop => (to[prop] = from[prop]))
+}
+
+const identity = i => i
+
+const randIn = (low, high) => low + Math.random() * (high - low)
+
+const times = (n, cb) => {
+  for (let i = 0; i < n; i += 1) cb()
+}
+
+export {
+  compare,
+  copyProps,
+  identity,
+  isString,
+  noop,
+  pick,
+  randIn,
+  sanitize,
+  times,
+}
