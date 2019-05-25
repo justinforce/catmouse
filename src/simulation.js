@@ -1,5 +1,5 @@
 import { addBunny, tickBunnies } from './bunnies'
-import { Bunny } from './images'
+import { Bunny, DefaultSprite } from './images'
 import { AppType, SimulationType } from './types'
 import { noop, randIn, times } from './util'
 
@@ -20,7 +20,7 @@ const initializeSimulation = (
   simulation = SimulationType,
   callback = noop
 ) => {
-  app.loader.add(Bunny).load(() => {
+  app.loader.add([DefaultSprite, Bunny]).load(() => {
     times(50, () => {
       const x = randIn(0, simulation.width)
       const y = randIn(0, simulation.height)
