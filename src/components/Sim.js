@@ -7,9 +7,10 @@ import {
 } from '../simulation'
 
 const [WIDTH, HEIGHT] = [800, 600]
+const BACKGROUND = 0x00bbff
 
 const Sim = () => {
-  const app = new Application()
+  const app = new Application({ backgroundColor: BACKGROUND })
   const ref = useRef()
 
   useEffect(() => {

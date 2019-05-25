@@ -21,10 +21,10 @@ const initializeSimulation = (
   callback = noop
 ) => {
   app.loader.add(Bunny).load(() => {
-    times(150, () => {
+    times(50, () => {
       const x = randIn(0, simulation.width)
       const y = randIn(0, simulation.height)
-      const speed = randIn(-0.5, 0.5)
+      const speed = randIn(-0.025, 0.025)
       addBunny({ simulation, x, y, speed })
     })
     callback()
