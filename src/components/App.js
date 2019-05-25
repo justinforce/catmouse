@@ -26,6 +26,9 @@ const App = () => {
         body > div {
           height: 100%;
         }
+        canvas {
+          image-rendering: pixelated;
+        }
       `}
       </style>
       <Sim />

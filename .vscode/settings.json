@@ -2,6 +2,7 @@
   "cSpell.ignorePaths": ["**/aws-exports.js"],
   "cSpell.words": [
     "displayname",
+    "pixelated",
     "pixi",
     "polyfill",
     "tortious"
