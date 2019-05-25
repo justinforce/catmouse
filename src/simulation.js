@@ -21,11 +21,12 @@ const initializeSimulation = (
   callback = noop
 ) => {
   app.loader.add([DefaultSprite, Bunny]).load(() => {
-    times(50, () => {
+    times(500, () => {
       const x = randIn(0, simulation.width)
       const y = randIn(0, simulation.height)
       const speed = randIn(-0.025, 0.025)
-      addBunny({ simulation, x, y, speed })
+      const scale = { x: randIn(0.25, 2), y: randIn(0.25, 2) }
+      addBunny({ simulation, x, y, speed, scale })
     })
     callback()
   })
