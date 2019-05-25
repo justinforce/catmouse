@@ -1,10 +1,10 @@
-import { Application } from 'pixi.js'
 import { addBunny, tickBunnies } from './bunnies'
 import { Bunny } from './images'
-import { randIn, times } from './util'
+import { AppType, SimulationType } from './types'
+import { noop, randIn, times } from './util'
 
 const createSimulation = ({
-  app = new Application(),
+  app = AppType,
   width = 800,
   height = 600,
   bunnies = [],
@@ -15,7 +15,11 @@ const createSimulation = ({
   bunnies,
 })
 
-const initializeSimulation = (app, simulation, callback) => {
+const initializeSimulation = (
+  app = AppType,
+  simulation = SimulationType,
+  callback = noop
+) => {
   app.loader.add(Bunny).load(() => {
     times(150, () => {
       const x = randIn(0, simulation.width)
@@ -27,7 +31,7 @@ const initializeSimulation = (app, simulation, callback) => {
   })
 }
 
-const tickSimulation = simulation => delta => {
+const tickSimulation = (simulation = SimulationType) => (delta = 1) => {
   tickBunnies(simulation, delta)
 }
 
