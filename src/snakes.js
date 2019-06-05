@@ -52,9 +52,9 @@ const tickSnake = ({
     snake.x = width / 2
     snake.y = height / 2
   }
-  const [vx, vy] = polarToCartesian(snake.speed, snake.rotation)
-  snake.x += vx * delta
-  snake.y += vy * delta
+  const [vx, vy] = polarToCartesian(snake.speed * delta, snake.rotation)
+  snake.x += vx
+  snake.y += vy
   snake.x = Math.max(0, snake.x)
   snake.y = Math.max(0, snake.y)
   snake.x = Math.min(snake.x, width)
