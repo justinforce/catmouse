@@ -6,48 +6,62 @@ const KEYS = {
   ArrowDown: 'down',
   ArrowLeft: 'left',
   ArrowRight: 'right',
-  w: 'up',
   W: 'up',
-  s: 'down',
   S: 'down',
-  a: 'left',
   A: 'left',
-  d: 'right',
   D: 'right',
   ' ': 'buttonA',
-  z: 'buttonX',
   Z: 'buttonX',
-  x: 'buttonY',
   X: 'buttonY',
 }
 
-const toggle = (node = {}, prop = 'toggle') => ({
-  /* eslint-disable no-param-reassign */
-  down: () => (node[prop] = true),
-  up: () => (node[prop] = false),
-})
+const unbound = { up: noop, down: noop }
 
-const getBindings = (simulation = SimulationType) => ({
-  up: toggle(simulation.input, 'up'),
-  down: toggle(simulation.input, 'down'),
-  left: toggle(simulation.input, 'left'),
-  right: toggle(simulation.input, 'right'),
-  buttonA: toggle(simulation.input, 'buttonA'),
-  buttonB: toggle(simulation.input, 'buttonB'),
-  buttonX: toggle(simulation.input, 'buttonX'),
-  buttonY: toggle(simulation.input, 'buttonY'),
-})
+const getBindings = (simulation = SimulationType) => {
+  const toggle = prop => ({
+    /* eslint-disable no-param-reassign */
+    down: () => (simulation.input[prop] = true),
+    up: () => (simulation.input[prop] = false),
+    /* eslint-enable no-param-reassign */
+  })
+  return {
+    up: toggle('up'),
+    down: toggle('down'),
+    left: toggle('left'),
+    right: toggle('right'),
+    buttonA: toggle('buttonA'),
+    buttonB: toggle('buttonB'),
+    buttonX: toggle('buttonX'),
+    buttonY: toggle('buttonY'),
+  }
+}
+
+const getBinding = (
+  bindings = {
+    up: unbound,
+    down: unbound,
+    left: unbound,
+    right: unbound,
+    buttonA: unbound,
+    buttonB: unbound,
+    buttonX: unbound,
+    buttonY: unbound,
+  },
+  key = ''
+) => {
+  const query = key.length === 1 ? key.toUpperCase() : key
+  return bindings[KEYS[query]] || unbound
+}
 
 const getListeners = (simulation = SimulationType) => {
   const bindings = getBindings(simulation)
-  const unbound = { up: noop, down: noop }
+  const listener = action => ({ key }) => {
+    const binding = getBinding(bindings, key)
+    binding[action]()
+  }
   return {
-    keydown: ({ key }) => {
-      ;(bindings[KEYS[key]] || unbound).down()
-    },
-    keyup: ({ key }) => {
-      ;(bindings[KEYS[key]] || unbound).up()
-    },
+    keydown: listener('down'),
+    keyup: listener('up'),
   }
 }
 
