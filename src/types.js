@@ -24,6 +24,10 @@ export const InputType = {
   down: false,
   left: false,
   right: false,
+  buttonA: false,
+  buttonB: false,
+  buttonX: false,
+  buttonY: false,
 }
 
 export const SnakeType = {

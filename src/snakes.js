@@ -40,12 +40,18 @@ const tickSnake = ({
   width = 800,
   height = 600,
 }) => (snake = SnakeType) => {
-  const { up, down, left, right } = input
+  const { up, down, left, right, buttonA, buttonX, buttonY } = input
   /* eslint-disable no-param-reassign */
   if (up) snake.speed += SPEED_INCREMENT
   if (down) snake.speed += -SPEED_INCREMENT
   if (left) snake.rotation -= snake.turnSpeed
   if (right) snake.rotation += snake.turnSpeed
+  if (buttonA || buttonY) snake.speed = 0
+  if (buttonX || buttonY) snake.rotation = -Math.PI / 2
+  if (buttonY) {
+    snake.x = width / 2
+    snake.y = height / 2
+  }
   const [vx, vy] = polarToCartesian(snake.speed, snake.rotation)
   snake.x += vx * delta
   snake.y += vy * delta

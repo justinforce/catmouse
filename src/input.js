@@ -14,6 +14,11 @@ const KEYS = {
   A: 'left',
   d: 'right',
   D: 'right',
+  ' ': 'buttonA',
+  z: 'buttonX',
+  Z: 'buttonX',
+  x: 'buttonY',
+  X: 'buttonY',
 }
 
 const toggle = (node = {}, prop = 'toggle') => ({
@@ -27,6 +32,10 @@ const getBindings = (simulation = SimulationType) => ({
   down: toggle(simulation.input, 'down'),
   left: toggle(simulation.input, 'left'),
   right: toggle(simulation.input, 'right'),
+  buttonA: toggle(simulation.input, 'buttonA'),
+  buttonB: toggle(simulation.input, 'buttonB'),
+  buttonX: toggle(simulation.input, 'buttonX'),
+  buttonY: toggle(simulation.input, 'buttonY'),
 })
 
 const getListeners = (simulation = SimulationType) => {
