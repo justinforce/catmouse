@@ -21,15 +21,15 @@ const App = () => {
       />
       <style>
         {`
-        html,
-        body,
-        body > div {
-          height: 100%;
-        }
-        canvas {
-          image-rendering: pixelated;
-        }
-      `}
+          html,
+          body,
+          body > div {
+            height: 100%;
+          }
+          canvas {
+            image-rendering: pixelated;
+          }
+        `}
       </style>
       <Sim />
     </MuiThemeProvider>
