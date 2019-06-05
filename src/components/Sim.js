@@ -34,10 +34,13 @@ const Sim = () => {
       height: HEIGHT,
     })
     const ticker = tickSimulation(simulation)
-    initializeSimulation(app, simulation, () => {
+    const terminateSimulation = initializeSimulation(app, simulation, () => {
       app.ticker.add(ticker)
     })
-    return () => app.ticker.remove(ticker)
+    return () => {
+      app.ticker.remove(ticker)
+      terminateSimulation()
+    }
   }, [app])
 
   return <div ref={div => (ref.current = div)} />

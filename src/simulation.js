@@ -21,6 +21,7 @@ const initializeSimulation = (
   callback = noop
 ) => {
   app.loader.add([DefaultSprite, Bunny]).load(() => {
+    const { width, height } = simulation
     times(500, () => {
       const x = randIn(0, simulation.width)
       const y = randIn(0, simulation.height)
@@ -30,6 +31,7 @@ const initializeSimulation = (
     })
     callback()
   })
+  return () => {}
 }
 
 const tickSimulation = (simulation = SimulationType) => (delta = 1) => {
