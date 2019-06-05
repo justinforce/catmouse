@@ -1,6 +1,8 @@
 import { SimulationType } from './types'
 import { noop } from './util'
 
+const DEAD_ZONE = 0.25
+
 const KEYS = {
   ArrowUp: 'up',
   ArrowDown: 'down',
@@ -75,4 +77,23 @@ const bindInput = (simulation = SimulationType) => {
   }
 }
 
-export default bindInput
+const tickInput = (simulation = SimulationType) => {
+  const { input } = simulation
+  const [gamepad] = navigator.getGamepads()
+  if (!gamepad) return
+  const { axes, buttons } = gamepad
+  if (axes) {
+    input.up = axes[1] < -DEAD_ZONE
+    input.down = axes[1] > DEAD_ZONE
+    input.left = axes[0] < -DEAD_ZONE
+    input.right = axes[0] > DEAD_ZONE
+  }
+  if (buttons) {
+    input.buttonA = buttons[0].pressed
+    input.buttonB = buttons[1].pressed
+    input.buttonX = buttons[2].pressed
+    input.buttonY = buttons[3].pressed
+  }
+}
+
+export { bindInput, tickInput }

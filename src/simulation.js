@@ -1,6 +1,6 @@
 import { addBunny, tickBunnies } from './bunnies'
 import { Bunny, DefaultSprite } from './images'
-import bindInput from './input'
+import { bindInput, tickInput } from './input'
 import { addSnake, tickSnakes } from './snakes'
 import { AppType, SimulationType } from './types'
 import { noop, randIn, times } from './util'
@@ -48,6 +48,7 @@ const initializeSimulation = (
 }
 
 const tickSimulation = (simulation = SimulationType) => (delta = 1) => {
+  tickInput(simulation)
   tickSnakes(simulation, delta)
   tickBunnies(simulation, delta)
 }
