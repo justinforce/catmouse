@@ -15,4 +15,4 @@ if (rootElement.parentNode !== document.body)
   document.body.appendChild(rootElement)
 
 document.title = name
-ReactDOM.render(<App name={name} />, rootElement)
+ReactDOM.render(<App />, rootElement)
