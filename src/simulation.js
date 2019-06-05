@@ -1,9 +1,9 @@
 import { addBunny, tickBunnies } from './bunnies'
 import { Bunny, DefaultSprite } from './images'
+import bindInput from './input'
+import { addSnake, tickSnakes } from './snakes'
 import { AppType, SimulationType } from './types'
 import { noop, randIn, times } from './util'
-import { addSnake, tickSnakes } from './snakes'
-import bindInput from './input'
 
 const createSimulation = ({
   app = AppType,
