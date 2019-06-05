@@ -20,11 +20,12 @@ const KEYS = {
 const unbound = { up: noop, down: noop }
 
 const getBindings = (simulation = SimulationType) => {
+  const {
+    input: { keyboard },
+  } = simulation
   const toggle = prop => ({
-    /* eslint-disable no-param-reassign */
-    down: () => (simulation.input[prop] = true),
-    up: () => (simulation.input[prop] = false),
-    /* eslint-enable no-param-reassign */
+    down: () => (keyboard[prop] = true),
+    up: () => (keyboard[prop] = false),
   })
   return {
     up: toggle('up'),
@@ -77,23 +78,37 @@ const bindInput = (simulation = SimulationType) => {
   }
 }
 
-const tickInput = (simulation = SimulationType) => {
+const tickGamepad = (simulation = SimulationType) => {
   const { input } = simulation
   const [gamepad] = navigator.getGamepads()
   if (!gamepad) return
-  const { axes, buttons } = gamepad
-  if (axes) {
-    input.up = axes[1] < -DEAD_ZONE
-    input.down = axes[1] > DEAD_ZONE
-    input.left = axes[0] < -DEAD_ZONE
-    input.right = axes[0] > DEAD_ZONE
-  }
-  if (buttons) {
-    input.buttonA = buttons[0].pressed
-    input.buttonB = buttons[1].pressed
-    input.buttonX = buttons[2].pressed
-    input.buttonY = buttons[3].pressed
-  }
+  const {
+    axes: [axisX, axisY],
+    buttons,
+  } = gamepad
+  const [buttonA, buttonB, buttonX, buttonY] = buttons.map(b => b.pressed)
+  input.gamepad.up = axisY < -DEAD_ZONE
+  input.gamepad.down = axisY > DEAD_ZONE
+  input.gamepad.left = axisX < -DEAD_ZONE
+  input.gamepad.right = axisX > DEAD_ZONE
+  input.gamepad.buttonA = buttonA
+  input.gamepad.buttonB = buttonB
+  input.gamepad.buttonX = buttonX
+  input.gamepad.buttonY = buttonY
+}
+
+const tickInput = (simulation = SimulationType) => {
+  tickGamepad(simulation)
+  const { input } = simulation
+  const { gamepad, keyboard } = input
+  input.up = keyboard.up || gamepad.up
+  input.down = keyboard.down || gamepad.down
+  input.left = keyboard.left || gamepad.left
+  input.right = keyboard.right || gamepad.right
+  input.buttonA = keyboard.buttonA || gamepad.buttonA
+  input.buttonB = keyboard.buttonB || gamepad.buttonB
+  input.buttonX = keyboard.buttonX || gamepad.buttonX
+  input.buttonY = keyboard.buttonY || gamepad.buttonY
 }
 
 export { bindInput, tickInput }

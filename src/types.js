@@ -14,12 +14,7 @@ export const AppType = {
   stage: { addChild: () => {} },
 }
 
-export const SimulationType = {
-  app: AppType,
-  bunnies: [],
-}
-
-export const InputType = {
+const inputs = {
   up: false,
   down: false,
   left: false,
@@ -28,6 +23,18 @@ export const InputType = {
   buttonB: false,
   buttonX: false,
   buttonY: false,
+}
+
+export const InputType = {
+  ...inputs,
+  keyboard: { ...inputs },
+  gamepad: { ...inputs },
+}
+
+export const SimulationType = {
+  app: AppType,
+  input: InputType,
+  bunnies: [],
 }
 
 export const SnakeType = {
