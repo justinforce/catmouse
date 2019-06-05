@@ -48,6 +48,12 @@ const times = (n, cb) => {
   for (let i = 0; i < n; i += 1) cb()
 }
 
+const polarToCartesian = (radius, angle) => {
+  const x = Math.cos(angle) * radius
+  const y = Math.sin(angle) * radius
+  return [x, y]
+}
+
 export {
   compare,
   copyProps,
@@ -55,6 +61,7 @@ export {
   isString,
   noop,
   pick,
+  polarToCartesian,
   randIn,
   sanitize,
   times,

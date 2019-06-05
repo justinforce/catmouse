@@ -29,6 +29,7 @@ export const InputType = {
 export const SnakeType = {
   x: 0,
   y: 0,
-  vx: 0,
-  vy: 0,
+  speed: 1,
+  turnSpeed: 0.1,
+  rotation: -Math.PI / 2,
 }

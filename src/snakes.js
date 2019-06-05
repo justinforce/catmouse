@@ -1,14 +1,28 @@
-import { Sprite } from 'pixi.js'
+import { Container, Sprite } from 'pixi.js'
 import { Bunny } from './images'
 import { AppType, InputType, SimulationType, SnakeType } from './types'
+import { polarToCartesian } from './util'
 
-const createSnake = ({ app = AppType, x = 0, y = 0, vx = 0, vy = 0 }) => {
-  const snake = new Sprite(app.loader.resources[Bunny].texture)
+const SPEED_INCREMENT = 0.5
+
+const createSnake = ({
+  app = AppType,
+  x = SnakeType.x,
+  y = SnakeType.y,
+  speed = SnakeType.speed,
+  turnSpeed = SnakeType.turnSpeed,
+  rotation = SnakeType.rotation,
+}) => {
+  const sprite = new Sprite(app.loader.resources[Bunny].texture)
+  sprite.rotation = Math.PI / 2
+  sprite.anchor = { x: 0.5, y: 0.5 }
+  const snake = new Container()
+  snake.addChild(sprite)
   snake.x = x
   snake.y = y
-  snake.vx = vx
-  snake.vy = vy
-  snake.anchor = { x: 0.5, y: 0.5 }
+  snake.speed = speed
+  snake.turnSpeed = turnSpeed
+  snake.rotation = rotation
   return snake
 }
 
@@ -28,12 +42,13 @@ const tickSnake = ({
 }) => (snake = SnakeType) => {
   const { up, down, left, right } = input
   /* eslint-disable no-param-reassign */
-  if (up) snake.vy += -1 * delta
-  if (down) snake.vy += 1 * delta
-  if (left) snake.vx += -1 * delta
-  if (right) snake.vx += 1 * delta
-  snake.x += snake.vx
-  snake.y += snake.vy
+  if (up) snake.speed += SPEED_INCREMENT
+  if (down) snake.speed += -SPEED_INCREMENT
+  if (left) snake.rotation -= snake.turnSpeed
+  if (right) snake.rotation += snake.turnSpeed
+  const [vx, vy] = polarToCartesian(snake.speed, snake.rotation)
+  snake.x += vx * delta
+  snake.y += vy * delta
   snake.x = Math.max(0, snake.x)
   snake.y = Math.max(0, snake.y)
   snake.x = Math.min(snake.x, width)

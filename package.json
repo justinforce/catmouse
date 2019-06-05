@@ -4,15 +4,14 @@
   "description": "Later...",
   "scripts": {
     "dev": "webpack-dev-server",
-    "lint": "eslint scripts src *.js",
+    "lint": "eslint src *.js",
     "start": "serve dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "mystery-deps": "node scripts/mystery-deps.js",
     "build": "NODE_ENV=production webpack --mode production --verbose",
     "pkg:audit": "npm audit",
     "pkg:update": "npm-check --update",
     "pkg:depcheck": "depcheck --ignores='@hot-loader/react-dom,@babel/preset-env,@babel/preset-react,babel-plugin-add-react-displayname,webpack-cli'",
-    "verify": "npm run-script lint && npm run-script mystery-deps && npm run-script pkg:audit && npm run-script pkg:depcheck && npm run-script build && npm run-script test"
+    "verify": "npm run-script lint && npm run-script pkg:audit && npm run-script pkg:depcheck && npm run-script build && npm run-script test"
   },
   "repository": {
     "type": "git",
@@ -33,7 +32,6 @@
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-add-react-displayname": "0.0.5",
-    "chalk": "^2.4.2",
     "clean-webpack-plugin": "^2.0.1",
     "css-loader": "^2.1.1",
     "depcheck": "^0.7.2",
@@ -60,7 +58,6 @@
     "@hot-loader/react-dom": "^16.8.6",
     "@material-ui/core": "^3.9.3",
     "pixi.js": "^5.0.3",
-    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-hot-loader": "^4.8.3",
