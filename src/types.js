@@ -18,3 +18,17 @@ export const SimulationType = {
   app: AppType,
   bunnies: [],
 }
+
+export const InputType = {
+  up: false,
+  down: false,
+  left: false,
+  right: false,
+}
+
+export const SnakeType = {
+  x: 0,
+  y: 0,
+  vx: 0,
+  vy: 0,
+}
