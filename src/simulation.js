@@ -32,14 +32,14 @@ const initializeSimulation = (
   const unbindInput = bindInput(simulation)
   app.loader.add([DefaultSprite, Bunny]).load(() => {
     const { width, height } = simulation
-    addSnake({ simulation, x: width / 2, y: height / 2 })
     times(500, () => {
       const x = randIn(0, width)
       const y = randIn(0, height)
       const speed = randIn(-0.025, 0.025)
       const scale = { x: randIn(0.25, 2), y: randIn(0.25, 2) }
-      // addBunny({ simulation, x, y, speed, scale })
+      addBunny({ simulation, x, y, speed, scale })
     })
+    addSnake({ simulation, x: width / 2, y: height / 2 })
     callback()
   })
   return () => {
