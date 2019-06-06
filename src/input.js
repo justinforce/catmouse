@@ -1,4 +1,4 @@
-import { SimulationType } from './types'
+import { BUTTONS, SimulationType } from './types'
 import { noop } from './util'
 
 const DEAD_ZONE = 0.25
@@ -101,14 +101,9 @@ const tickInput = (simulation = SimulationType) => {
   tickGamepad(simulation)
   const { input } = simulation
   const { gamepad, keyboard } = input
-  input.up = keyboard.up || gamepad.up
-  input.down = keyboard.down || gamepad.down
-  input.left = keyboard.left || gamepad.left
-  input.right = keyboard.right || gamepad.right
-  input.buttonA = keyboard.buttonA || gamepad.buttonA
-  input.buttonB = keyboard.buttonB || gamepad.buttonB
-  input.buttonX = keyboard.buttonX || gamepad.buttonX
-  input.buttonY = keyboard.buttonY || gamepad.buttonY
+  BUTTONS.forEach(button => {
+    input[button] = gamepad[button] || keyboard[button]
+  })
 }
 
 export { bindInput, tickInput }

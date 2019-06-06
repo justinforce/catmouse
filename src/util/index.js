@@ -38,6 +38,7 @@ const noop = () => {}
 const copyProps = (props, from, to) => {
   /* eslint-disable no-param-reassign */
   props.forEach(prop => (to[prop] = from[prop]))
+  /* eslint-enable no-param-reassign */
 }
 
 const identity = i => i

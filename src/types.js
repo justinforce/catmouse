@@ -25,6 +25,8 @@ const inputs = {
   buttonY: false,
 }
 
+export const BUTTONS = Object.keys(inputs)
+
 export const InputType = {
   ...inputs,
   keyboard: { ...inputs },
