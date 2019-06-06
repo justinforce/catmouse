@@ -99,8 +99,10 @@ const tickGamepad = (simulation = SimulationType) => {
 
 const tickInput = (simulation = SimulationType) => {
   tickGamepad(simulation)
-  const { input } = simulation
-  const { gamepad, keyboard } = input
+  const {
+    input,
+    input: { gamepad, keyboard },
+  } = simulation
   BUTTONS.forEach(button => {
     input[button] = gamepad[button] || keyboard[button]
   })
