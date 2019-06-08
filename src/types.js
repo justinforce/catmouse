@@ -36,13 +36,18 @@ export const InputType = {
 export const SimulationType = {
   app: AppType,
   input: InputType,
+  width: 800,
+  height: 600,
   bunnies: [],
+  snakes: [],
 }
 
 export const SnakeType = {
   x: 0,
   y: 0,
+  length: 10,
   speed: 1,
   turnSpeed: 0.1,
   rotation: -Math.PI / 2,
+  tail: [],
 }

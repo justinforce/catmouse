@@ -6,7 +6,6 @@ import {
   tickSimulation,
 } from '../simulation'
 
-const [WIDTH, HEIGHT] = [800, 600]
 const BACKGROUND = 0x00bbff
 
 const Sim = () => {
@@ -28,11 +27,7 @@ const Sim = () => {
   }, [app])
 
   useEffect(() => {
-    const simulation = createSimulation({
-      app,
-      width: WIDTH,
-      height: HEIGHT,
-    })
+    const simulation = createSimulation({ app })
     const ticker = tickSimulation(simulation)
     const terminateSimulation = initializeSimulation(app, simulation, () => {
       app.ticker.add(ticker)

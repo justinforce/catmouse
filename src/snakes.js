@@ -5,14 +5,9 @@ import { polarToCartesian } from './util'
 
 const SPEED_INCREMENT = 0.5
 
-const createSnake = ({
-  app = AppType,
-  x = SnakeType.x,
-  y = SnakeType.y,
-  speed = SnakeType.speed,
-  turnSpeed = SnakeType.turnSpeed,
-  rotation = SnakeType.rotation,
-}) => {
+const createSnake = (app = AppType, snakeProps = SnakeType) => {
+  const mergedSnakeProps = { ...SnakeType, ...snakeProps }
+  const { x, y, length, speed, turnSpeed, rotation, tail } = mergedSnakeProps
   const sprite = new Sprite(app.loader.resources[Bunny].texture)
   sprite.rotation = Math.PI / 2
   sprite.anchor = { x: 0.5, y: 0.5 }
@@ -20,15 +15,18 @@ const createSnake = ({
   snake.addChild(sprite)
   snake.x = x
   snake.y = y
+  snake.length = length
   snake.speed = speed
   snake.turnSpeed = turnSpeed
   snake.rotation = rotation
+  snake.tail = tail
   return snake
 }
 
-const addSnake = ({ simulation = SimulationType, x = 0, y = 0 }) => {
+const addSnake = (simulation = SimulationType, snakeProps = SnakeType) => {
   const { app } = simulation
-  const snake = createSnake({ app, x, y })
+  const { x, y } = snakeProps
+  const snake = createSnake(app, { x, y })
   simulation.snakes.push(snake)
   app.stage.addChild(snake)
   return snake
@@ -41,6 +39,10 @@ const tickSnake = ({
   height = 600,
 }) => (snake = SnakeType) => {
   const { up, down, left, right, buttonA, buttonX, buttonY } = input
+  const tail = [{ x: snake.x, y: snake.y }, ...snake.tail].slice(
+    0,
+    snake.length
+  )
   /* eslint-disable no-param-reassign */
   if (up) snake.speed += SPEED_INCREMENT
   if (down) snake.speed += -SPEED_INCREMENT
@@ -59,6 +61,7 @@ const tickSnake = ({
   snake.y = Math.max(0, snake.y)
   snake.x = Math.min(snake.x, width)
   snake.y = Math.min(snake.y, height)
+  snake.tail = tail
   /* eslint-enable no-param-reassign */
 }
 
