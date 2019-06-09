@@ -68,7 +68,7 @@ const getListeners = (simulation = SimulationType) => {
   }
 }
 
-const bindInput = (simulation = SimulationType) => {
+const bindKeyboard = (simulation = SimulationType) => {
   const { keyup, keydown } = getListeners(simulation)
   window.addEventListener('keydown', keydown)
   window.addEventListener('keyup', keyup)
@@ -97,7 +97,7 @@ const tickGamepad = (simulation = SimulationType) => {
   input.gamepad.buttonY = buttonY
 }
 
-const tickInput = (simulation = SimulationType) => {
+const tick = (simulation = SimulationType) => {
   tickGamepad(simulation)
   const {
     input,
@@ -108,4 +108,4 @@ const tickInput = (simulation = SimulationType) => {
   })
 }
 
-export { bindInput, tickInput }
+export { bindKeyboard, tick as tickInput }

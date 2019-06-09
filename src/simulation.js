@@ -1,6 +1,6 @@
 import { addBunny, tickBunnies } from './bunnies'
 import { Bunny, DefaultSprite } from './images'
-import { bindInput, tickInput } from './input'
+import { bindKeyboard, tickInput } from './input'
 import { addSnake, tickSnakes } from './snakes'
 import { AppType, SimulationType } from './types'
 import { noop, randIn, times } from './util'
@@ -25,7 +25,7 @@ const initializeSimulation = (
   simulation = SimulationType,
   callback = noop
 ) => {
-  const unbindInput = bindInput(simulation)
+  const unbindKeyboard = bindKeyboard(simulation)
   app.loader.add([DefaultSprite, Bunny]).load(() => {
     const { width, height } = simulation
     times(32, () => {
@@ -39,7 +39,7 @@ const initializeSimulation = (
     callback()
   })
   return () => {
-    unbindInput()
+    unbindKeyboard()
   }
 }
 

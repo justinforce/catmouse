@@ -4,7 +4,7 @@ import { AppType, SimulationType } from './types'
 
 const DEFAULT_SPEED = 0.05
 
-const createBunny = ({
+const create = ({
   app = AppType,
   x = 0,
   y = 0,
@@ -22,7 +22,7 @@ const createBunny = ({
   return bunny
 }
 
-const addBunny = ({
+const add = ({
   simulation = SimulationType,
   x = 0,
   y = 0,
@@ -30,16 +30,16 @@ const addBunny = ({
   scale = { x: 1, y: 1 },
 } = {}) => {
   const { app } = simulation
-  const bunny = createBunny({ app, x, y, speed, scale })
+  const bunny = create({ app, x, y, speed, scale })
   simulation.bunnies.push(bunny) // eslint-disable-line no-param-reassign
   app.stage.addChild(bunny)
   return bunny
 }
 
-const tickBunnies = (simulation = SimulationType, delta = 1) => {
+const tick = (simulation = SimulationType, delta = 1) => {
   /* eslint-disable no-param-reassign */
   const { bunnies } = simulation
   bunnies.forEach(bunny => (bunny.rotation += bunny.speed * delta))
 }
 
-export { addBunny, createBunny, tickBunnies }
+export { add as addBunny, tick as tickBunnies }
