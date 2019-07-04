@@ -15,6 +15,10 @@ const KEYS = {
   ' ': 'buttonA',
   Z: 'buttonX',
   X: 'buttonY',
+  '-': 'buttonL',
+  _: 'buttonL',
+  '=': 'buttonR',
+  '+': 'buttonR',
 }
 
 const unbound = { up: noop, down: noop }
@@ -36,6 +40,8 @@ const getBindings = (simulation = SimulationType) => {
     buttonB: toggle('buttonB'),
     buttonX: toggle('buttonX'),
     buttonY: toggle('buttonY'),
+    buttonL: toggle('buttonL'),
+    buttonR: toggle('buttonR'),
   }
 }
 
@@ -49,6 +55,8 @@ const getBinding = (
     buttonB: unbound,
     buttonX: unbound,
     buttonY: unbound,
+    buttonL: unbound,
+    buttonR: unbound,
   },
   key = ''
 ) => {
@@ -86,15 +94,38 @@ const tickGamepad = (simulation = SimulationType) => {
     axes: [axisX, axisY],
     buttons,
   } = gamepad
-  const [buttonA, buttonB, buttonX, buttonY] = buttons.map(b => b.pressed)
-  input.gamepad.up = axisY < -DEAD_ZONE
-  input.gamepad.down = axisY > DEAD_ZONE
-  input.gamepad.left = axisX < -DEAD_ZONE
-  input.gamepad.right = axisX > DEAD_ZONE
+  /*
+   0 1 2 3  4  5  6  7  8  9 10 11 12 13 14 15 16
+   A B X Y LB RB LT RT BA ST LS RS DU DD DL DR GU
+  */
+  const [
+    buttonA,
+    buttonB,
+    buttonX,
+    buttonY,
+    buttonL,
+    buttonR,
+    ,
+    ,
+    ,
+    ,
+    ,
+    ,
+    dPadUp,
+    dPadDown,
+    dPadLeft,
+    dPadRight,
+  ] = buttons.map(b => b.pressed)
+  input.gamepad.up = axisY < -DEAD_ZONE || dPadUp
+  input.gamepad.down = axisY > DEAD_ZONE || dPadDown
+  input.gamepad.left = axisX < -DEAD_ZONE || dPadLeft
+  input.gamepad.right = axisX > DEAD_ZONE || dPadRight
   input.gamepad.buttonA = buttonA
   input.gamepad.buttonB = buttonB
   input.gamepad.buttonX = buttonX
   input.gamepad.buttonY = buttonY
+  input.gamepad.buttonL = buttonL
+  input.gamepad.buttonR = buttonR
 }
 
 const tick = (simulation = SimulationType) => {

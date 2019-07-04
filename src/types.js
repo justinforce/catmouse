@@ -23,6 +23,8 @@ const inputs = {
   buttonB: false,
   buttonX: false,
   buttonY: false,
+  buttonL: false,
+  buttonR: false,
 }
 
 export const BUTTONS = Object.keys(inputs)

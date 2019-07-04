@@ -14,6 +14,7 @@ const Sim = () => {
 
   useEffect(() => {
     settings.SCALE_MODE = SCALE_MODES.NEAREST
+    settings.SORTABLE_CHILDREN = true
   }, [])
 
   useEffect(() => {
