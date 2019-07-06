@@ -1,6 +1,6 @@
 import { Sprite } from 'pixi.js'
 import { Bunny } from './images'
-import { AppType, SimulationType } from './types'
+import { AppType, SimType } from './types'
 
 const DEFAULT_SPEED = 0.05
 
@@ -23,23 +23,23 @@ const create = ({
 }
 
 const add = ({
-  simulation = SimulationType,
+  sim = SimType,
   x = 0,
   y = 0,
   speed = DEFAULT_SPEED,
   scale = { x: 1, y: 1 },
 } = {}) => {
-  const { app } = simulation
+  const { app } = sim
   const bunny = create({ app, x, y, speed, scale })
-  simulation.bunnies.push(bunny) // eslint-disable-line no-param-reassign
+  sim.bunnies.push(bunny) // eslint-disable-line no-param-reassign
   app.stage.addChild(bunny)
   return bunny
 }
 
-const tick = (simulation = SimulationType, delta = 1) => {
+const tick = (sim = SimType, delta = 1) => {
   /* eslint-disable no-param-reassign */
-  const { bunnies } = simulation
+  const { bunnies } = sim
   bunnies.forEach(bunny => (bunny.rotation += bunny.speed * delta))
 }
 
-export { add as addBunny, tick as tickBunnies }
+export { add, tick }

@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom'
 import { name } from '../package.json'
 import App from './components/App'
 
+const ID = 'root'
+
 const rootElement =
-  document.querySelector('#root') ||
+  document.querySelector(`#${ID}`) ||
   (() => {
     const root = document.createElement('div')
-    root.id = 'root'
+    root.id = ID
     return root
   })()
 

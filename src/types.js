@@ -35,7 +35,7 @@ export const InputType = {
   gamepad: { ...inputs },
 }
 
-export const SimulationType = {
+export const SimType = {
   app: AppType,
   input: InputType,
   width: 800,

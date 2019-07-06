@@ -1,4 +1,4 @@
-import { BUTTONS, SimulationType } from './types'
+import { BUTTONS, SimType } from './types'
 import { noop } from './util'
 
 const DEAD_ZONE = 0.25
@@ -23,10 +23,10 @@ const KEYS = {
 
 const unbound = { up: noop, down: noop }
 
-const getBindings = (simulation = SimulationType) => {
+const getBindings = (sim = SimType) => {
   const {
     input: { keyboard },
-  } = simulation
+  } = sim
   const toggle = prop => ({
     down: () => (keyboard[prop] = true),
     up: () => (keyboard[prop] = false),
@@ -64,8 +64,8 @@ const getBinding = (
   return bindings[KEYS[query]] || unbound
 }
 
-const getListeners = (simulation = SimulationType) => {
-  const bindings = getBindings(simulation)
+const getListeners = (sim = SimType) => {
+  const bindings = getBindings(sim)
   const listener = action => ({ key }) => {
     const binding = getBinding(bindings, key)
     binding[action]()
@@ -76,8 +76,8 @@ const getListeners = (simulation = SimulationType) => {
   }
 }
 
-const bindKeyboard = (simulation = SimulationType) => {
-  const { keyup, keydown } = getListeners(simulation)
+const bindKeyboard = (sim = SimType) => {
+  const { keyup, keydown } = getListeners(sim)
   window.addEventListener('keydown', keydown)
   window.addEventListener('keyup', keyup)
   return () => {
@@ -86,8 +86,8 @@ const bindKeyboard = (simulation = SimulationType) => {
   }
 }
 
-const tickGamepad = (simulation = SimulationType) => {
-  const { input } = simulation
+const tickGamepad = (sim = SimType) => {
+  const { input } = sim
   const [gamepad] = navigator.getGamepads()
   if (!gamepad) return
   const {
@@ -128,15 +128,15 @@ const tickGamepad = (simulation = SimulationType) => {
   input.gamepad.buttonR = buttonR
 }
 
-const tick = (simulation = SimulationType) => {
-  tickGamepad(simulation)
+const tick = (sim = SimType) => {
+  tickGamepad(sim)
   const {
     input,
     input: { gamepad, keyboard },
-  } = simulation
+  } = sim
   BUTTONS.forEach(button => {
     input[button] = gamepad[button] || keyboard[button]
   })
 }
 
-export { bindKeyboard, tick as tickInput }
+export { bindKeyboard, tick }

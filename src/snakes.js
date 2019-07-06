@@ -1,6 +1,6 @@
 import { GroupD8, Rectangle, Sprite, Texture } from 'pixi.js'
 import { Bunny } from './images'
-import { AppType, SimulationType, SnakeType } from './types'
+import { AppType, SimType, SnakeType } from './types'
 import { copyProps, polarToCartesian } from './util'
 
 const SPEED_INCREMENT = 0.5
@@ -33,20 +33,20 @@ const create = (app = AppType, snakeProps = SnakeType) => {
   return snake
 }
 
-const add = (simulation = SimulationType, snakeProps = SnakeType) => {
-  const { app } = simulation
+const add = (sim = SimType, snakeProps = SnakeType) => {
+  const { app } = sim
   const { x, y } = snakeProps
   const snake = create(app, { x, y })
-  simulation.snakes.push(snake)
+  sim.snakes.push(snake)
   app.stage.addChild(snake)
   snake.tail.forEach(t => app.stage.addChild(t))
   app.stage.sortChildren()
   return snake
 }
 
-const tick = (simulation = SimulationType, delta = 1) => {
-  const { input, width, height } = simulation
-  simulation.snakes.forEach(snake => {
+const tick = (sim = SimType, delta = 1) => {
+  const { input, width, height } = sim
+  sim.snakes.forEach(snake => {
     const {
       up,
       down,
@@ -89,4 +89,4 @@ const tick = (simulation = SimulationType, delta = 1) => {
   })
 }
 
-export { add as addSnake, tick as tickSnakes }
+export { add, tick }

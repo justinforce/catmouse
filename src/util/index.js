@@ -24,15 +24,6 @@ const isString = obj => typeof obj === 'string' || obj instanceof String
  */
 const pick = list => list[Math.floor(Math.random() * list.length)]
 
-/**
- * Returns a copy of the string which has the properties:
- * 1. All upper case letters converted to lower case letters
- * 2. All leading and trailing white space removed
- * @param {string} input The input string
- * @returns {string} The sanitized string
- */
-const sanitize = input => (input ? input.trim().toLowerCase() : '')
-
 const noop = () => {}
 
 const copyProps = (props, from, to) => {
@@ -64,6 +55,5 @@ export {
   pick,
   polarToCartesian,
   randIn,
-  sanitize,
   times,
 }
